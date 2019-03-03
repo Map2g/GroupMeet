@@ -20,7 +20,7 @@
 </head>
 
 <body class="bg-dark">
-
+<form action = "register.php" method = "post">
   <div class="container">
     <div class="card card-register mx-auto mt-5">
       <div class="card-header">Register an Account</div>
@@ -30,8 +30,9 @@
             <div class="form-row">
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <input type="text" id="firstName" class="form-control" placeholder="First name" required="required" autofocus="autofocus">
-                  <label for="firstName">First name</label>
+               <input type="text" name="fname" class="form-control" placeholder="" required="required">
+                      <!--first_name: <input type = "text" name = "fname">-->
+                  <!--<label for="firstName">First name</label>-->
                 </div>
               </div>
               <div class="col-md-6">
@@ -80,7 +81,7 @@
 
   <!-- Core plugin JavaScript-->
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
+</form>
 </body>
 
 </html>
