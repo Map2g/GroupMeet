@@ -20,52 +20,41 @@
 </head>
 
 <body class="bg-dark">
-<form action = "register.php" method = "post">
   <div class="container">
     <div class="card card-register mx-auto mt-5">
-      <div class="card-header">Register an Account</div>
+      <div class="card-header">Register a Group</div>
       <div class="card-body">
-        <form>
+        <form action = "register.php" method = "post">
+          
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
                 <div class="form-label-group">
-               <input type="text" name="fname" class="form-control" placeholder="" required="required">
+                  Group Name: <input type="text" name="gname" class="form-control" placeholder="Group Name" required="required">
                       <!--first_name: <input type = "text" name = "fname">-->
-                  <!--<label for="firstName">First name</label>-->
+                      <!--<label for="firstName">First name</label>-->
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-label-group">
-                  <input type="text" id="lastName" class="form-control" placeholder="Last name" required="required">
-                  <label for="lastName">Last name</label>
+                  Group Admin Email: <input type="text" name="gaemail" class="form-control" placeholder="Group Admin Email" required="required">
+                  <!--<input type="text" id="lastName" class="form-control" placeholder="Last name" required="required">-->
+                  <!--<label for="lastName">Last name</label>-->
                 </div>
               </div>
             </div>
           </div>
+          
           <div class="form-group">
             <div class="form-label-group">
-              <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required">
-              <label for="inputEmail">Email address</label>
+              Description: <textarea class="form-control" name="details" required="required"></textarea>
+              <!--<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required">-->
+              <!--<label for="inputEmail">Email address</label>-->
             </div>
           </div>
-          <div class="form-group">
-            <div class="form-row">
-              <div class="col-md-6">
-                <div class="form-label-group">
-                  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required">
-                  <label for="inputPassword">Password</label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-label-group">
-                  <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm password" required="required">
-                  <label for="confirmPassword">Confirm password</label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <a class="btn btn-primary btn-block" href="login.html">Register</a>
+          
+          <input type = "submit" value = "Next">
+          <!--<a class="btn btn-primary btn-block" href="login.html">Register</a>-->
         </form>
         <div class="text-center">
           <a class="d-block small mt-3" href="login.html">Login Page</a>
