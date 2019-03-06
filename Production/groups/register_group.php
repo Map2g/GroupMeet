@@ -37,7 +37,7 @@ if (mysqli_num_rows($result) > 0) {
     } else {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);
     }
-
+    
 } else {
     echo "Record not located";
 }
@@ -56,9 +56,3 @@ mysqli_close($conn);
 // }
 
 ?> 
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Refresh" content="2; url=/register_group.html" />
-</head>
-</html>
