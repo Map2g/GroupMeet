@@ -4,6 +4,8 @@ $username = "root";
 $password = "";
 $dbname = "GroupMeet";
 
+//*****************************************************************************************************
+
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
@@ -22,6 +24,8 @@ $sql = "SELECT * FROM Users WHERE email = '$email'"; //Searching for a matching 
 $result = mysqli_query($conn, $sql);//result stores the boolean value of the query from the variable sql
 $row = mysqli_fetch_assoc($result);//row stores teh value of result 
 echo $row;
+
+//*****************************************************************************************************
 
 if (mysqli_num_rows($result) > 0) {
     echo "You have been logged in";
