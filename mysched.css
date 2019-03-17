@@ -1,0 +1,290 @@
+/*   To be combined with sb-admin.css???  */
+
+html {
+   box-sizing: border-box;
+}
+
+/*
+*, *:before, *:after {
+   box-sizing: inherit;
+}
+
+* {
+   outline: 0;
+}
+
+/*body {
+   background: linear-gradient(45deg, rgb(19, 73, 95), rgb(118, 75, 226), rgb(131, 115, 198), rgb(119, 211, 185));
+   background-attachment: fixed;
+   height:100vh;
+   padding: 3rem 0;
+   margin: 0;
+   color: #555;
+   font: {
+      family: 'Lato', sans-serif;
+      size: 14px;
+   }
+}*/
+
+/*.container {
+   width: 90%;
+   margin: auto;
+}*/
+
+/*.mobile-wrapper {*/
+/*   background: #fff;*/
+   /* relative with .today-box::before*/
+/*   z-index: 1;  /*positive // PARENT */
+/*   position: relative;*/
+   /*---------*/
+/*   width: 380px;*/
+/*   min-height: 100%;*/
+/*   margin: auto;*/
+/*   padding: 10px 0 20px;*/
+/*   border-radius: 10px;*/
+/*   box-shadow: 0px 10px 30px -10px #000;*/
+/*   overflow: hidden;*/
+/*}*/
+
+/*.header {
+   padding-bottom: 15px;
+   margin-bottom: 40px;
+   .container {
+      position: relative;
+      span {
+         color: #444;
+         font: {
+            family: 'Ramabhadra';
+            size: 21px;
+            weight: 700;
+         }
+      }
+      h1 {
+         margin-top: 5px;
+         color: #919294;
+         font: {
+            size: 13px;
+            weight: 300;
+         }
+      }
+
+      .menu-toggle {
+         width: 25px;
+         height: 25px;
+         background: #fff;
+         padding: 24px;
+         border-radius: 50%;
+         direction: rtl;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         box-shadow: 0px 10px 30px -14px #000;
+         position: absolute;
+         top: 0;
+         right: 0;
+         cursor: pointer;
+         span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background: #777;
+            border-radius: 2px;
+            transition: all 300ms ease;
+            &:not(:last-child) {
+               margin-bottom: 5px;
+            }
+            &:first-child {
+               width: 20px;
+            }
+            &:last-child {
+               width: 15px;
+            }
+         }  
+         &:hover span:first-child,
+         &:hover span:last-child {
+            width: 100%;
+         }
+      }
+      &::before {
+         content: "";
+         display: block;
+         width: 0;
+         height: 0;
+         border: 6px solid transparent;
+         border-left-color: #e8e8e8;
+         position: absolute;
+         bottom: -13px;
+         right: 0px;
+      }
+      &::after {
+         content: "";
+         display: block;
+         width: calc(100% - 10px);
+         height: 2px;
+         background-color: #e8e8e8;
+         position: relative;
+         top: 8px;
+      }
+   }
+}*/
+
+.today-box {
+   background: linear-gradient(to left, #212529, rgba(0, 0, 0, 0.075)), #212529;
+   color: #FFF;
+   padding: 37px 40px;
+   position: relative;
+   box-shadow: 0px 0px 40px -9px #212529;
+   margin-bottom: 50px;
+   
+}
+   
+.breadcrumb2 {
+   font-weight: 300;
+   position: relative;
+}
+
+.date-title {
+   font-size: 20px;
+   margin: 7px 0 0 0;
+   letter-spacing: 1px;
+   font-weight: 600;
+   text-shadow: 0px 0px 5px  rgba(#000, 0.15);
+
+}
+
+.plus-icon2 {
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   right: 40px;
+   cursor: pointer;
+   transition: all 350ms ease;
+   transition-timing-function: cubic-bezier(0.05,1.8,1,1.57);
+}
+
+i2 {
+   font-size: 30px;
+   font-weight: 700;
+   background: #fff;
+   color: #777;
+   width: 45px;
+   height: 45px;
+   border: 6px solid #212529;
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+      .upcoming-events-head {
+         color: #333;
+         font-size: 35px;
+         margin-bottom: 30px;
+         font-weight: 500;
+         line-height: 1.2;
+         position: relative;
+      }
+      
+      .events-wrapper {
+         margin-bottom: 30px;
+      }
+         .event {
+            position: relative;
+            margin-bottom: 25px;
+            padding-left:58px;
+            cursor: pointer;
+         }
+            .i3 {
+               font-size: 20px;
+               font-weight: 100;
+               position: absolute;
+               left: 0;
+               top: -4px;
+            }
+            .event__point {
+               margin: 0;
+               color: #555;
+               font-size: 20px;
+               font-weight: 800;
+               letter-spacing: 1px;
+            }
+            
+            .event__duration {
+               position: absolute;
+               top: 5px;
+               right: 0;
+               color: #999;
+               font-size: 15px;
+               font-weight: 800;
+               font-style: italic;
+            }
+            
+            .event__description {
+               margin-top: 10px;
+               color: #919294;      /*Pick darker color later*/
+               font-size: 15px;
+               font-weight: 300;
+            }
+               .i4 {
+                  position: absolute;
+                  left: 25px;
+                  top: 17px;
+               }  
+
+
+/* Voting buttons are radio for now but if vating is actually going to matter they
+   will have to be buttons that do something like update a vote quantity in the dB
+   by one or something... */
+
+/* HIDE RADIO */
+.hiddenradio input[type="radio"] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* IMAGE STYLES */
+.hiddenradio input[type="radio"] + i {
+  cursor: pointer;
+}
+
+/* CHECKED STYLES */
+.hiddenradio [type="radio"]:checked + i {
+  color: #ee6b51;
+}
+
+
+/*.add-event-button {
+   display: flex;
+   align-items: center;
+   margin-left: auto;
+   border: 0;
+   padding: 0;
+   background: linear-gradient(to left, #485fed, rgba(255, 44, 118, .25)), #485fed;
+   border-radius: 50px;
+   cursor: pointer;
+   box-shadow: 0px 0px 40px -9px #485fed;
+   .add-event-button__title{
+      color: #FFF;
+      padding: 0 18px 0 23px;
+      text-shadow: 0px 0px 5px  rgba(#000, 0.2);
+      font: {
+         family: 'Lato';
+         size: 15px;
+         weight: 600;
+      }
+   }
+   .add-event-button__icon {
+      display: inline-block;
+      background: rgba(#FFF, 0.1);
+      padding: 0 17px 0 12px;
+      height: 100%;
+      i {
+         margin: 0;
+         color: #fff;
+         font-size: 25px;
+         padding: 13px 0;
+      }
+   }
+}*/

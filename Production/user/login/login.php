@@ -26,6 +26,7 @@ echo $row;
 if (mysqli_num_rows($result) > 0) {
     echo "You have been logged in";
     echo "<br>" . "<br>";
+    setcookie("loginCredentials", $email, time() * 7200);
 }
 else{
     echo "Incorrect email or password";

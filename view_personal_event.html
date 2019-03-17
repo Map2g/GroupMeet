@@ -12,10 +12,11 @@
 
   <!-- Page level plugin CSS-->
   <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-  <link href="calendar.css" rel="stylesheet">
+  
 
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
+  <link href="mysched.css" rel="stylesheet">
 
 </head>
 
@@ -138,74 +139,136 @@
         
          <!--======= Today =======-->
         
-   <section class="today-box" id="today-box">
-      <span class="breadcrumb2">Today</span>  <!--Doesn't work right-->
-      <h3 class="date-title"><script>document.write(new Date().toDateString());</script></h3>
-      <div class="plus-icon">
-         <i class="ion ion-ios-add"></i>
-      </div>
-   </section>
+       <section class="today-box" id="today-box">
+          <span class="breadcrumb2">Today</span>
+          <h3 class="date-title"><script>document.write(new Date().toDateString());</script></h3>
+          <div class="plus-icon2">
+              
+             <button id="addEvent" class="btn-block">
+                <i class="fa fa-plus"></i>
+                Add Event
+             </button>
+             
+            <script type="text/javascript">
+              document.getElementById("addEvent").onclick = function () {
+              window.location.href = "register_personal_event.html";
+              };
+            </script>
+             
+          </div>
+       </section>
+        
+       <!--======= Upcoming Events =======-->
     
-   <!--======= Upcoming Events =======-->
-
-   <section class="upcoming-events">
-      <div class="container">
-         <h3>
+       <section class="upcoming-events">
+          <div class="upcoming-events-head">
             Lastest Events
+          </div>
+             <div class="events-wrapper">
+                <div class="event">
+                   <div class="i3">
+                    <div class="hiddenradio">
+                      <label>
+                        <input type="radio" name="thumbs1" value="up">
+                        <i class="far fa-thumbs-up"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="thumbs1" value="down">
+                        <i class="far fa-thumbs-down"></i>
+                      </label>
+                    </div>
+                   </div>
+                   <h4 class="event__point">11:00 am</h4>
+                   <span class="event__duration">in 30 minutes.</span>
+                   <p class="event__description">
+                      Monday briefing with the team (...).
+                   </p>
+                </div>
+                <div class="event">
+                   <div class="i3">
+                    <div class="hiddenradio">
+                      <label>
+                        <input type="radio" name="thumbs2" value="up">
+                        <i class="far fa-thumbs-up"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="thumbs2" value="down">
+                        <i class="far fa-thumbs-down"></i>
+                      </label>
+                    </div>
+                   </div>                  
+                   <h4 class="event__point">12:00 pm</h4>
+                   <span class="event__duration">in 1 hour.</span>
+                   <p class="event__description">
+                      Lunch with Paul Mccartney @Burgers House!
+                   </p>
+                </div>
+                <div class="event">
+                   <div class="i3">
+                    <div class="hiddenradio">
+                      <label>
+                        <input type="radio" name="thumbs3" value="up">
+                        <i class="far fa-thumbs-up"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="thumbs3" value="down">
+                        <i class="far fa-thumbs-down"></i>
+                      </label>
+                    </div>
+                   </div>                  
+                   <i class="ion ion-ios-radio-button-on icon-in-active-mode"></i>
+                   <h4 class="event__point">14:00 pm</h4>
+                   <p class="event__description">
+                      Meet clients from project.
+                   </p>
+                </div>
+                <div class="event">
+                  <div class="i3">
+                    <div class="hiddenradio">
+                      <label>
+                        <input type="radio" name="thumbs4" value="up">
+                        <i class="far fa-thumbs-up"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="thumbs4" value="down">
+                        <i class="far fa-thumbs-down"></i>
+                      </label>
+                      </div>
+                   </div>
+                   <h4 class="event__point">20:45 pm</h4>
+                   <span class="event__duration">in 45 minutes.</span>
+                   <p class="event__description">
+                      Watch sci-fi series.
+                   </p>
+                </div>
+                <div class="event">
+                   <div class="i3">
+                    <div class="hiddenradio">
+                      <label>
+                        <input type="radio" name="thumbs5" value="up">
+                        <i class="far fa-thumbs-up"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="thumbs5" value="down">
+                        
+          <!--Will need to have a unique "name category for every event listed-->
+          <!--Also there's no point in having a voting option for your own schedule.-->
+          <!-- this is just a template for the other pages I guess -->
+          
+                        <i class="far fa-thumbs-down"></i>
+                      </label>
+                      </div>
+                   </div>
+                   <h4 class="event__point">23:15 pm</h4>
+                   <span class="event__duration">in 20 minutes.</span>
+                   <p class="event__description">
+                      Customer dialog on Skype.
+                   </p>
+                </div>
+             </div>
 
-         </h3>
-         <div class="events-wrapper">
-            <div class="event">
-               <i class="ion ion-ios-flame hot"></i>
-               <h4 class="event__point">11:00 am</h4>
-               <span class="event__duration">in 30 minutes.</span>
-               <p class="event__description">
-                  Monday briefing with the team (...).
-               </p>
-            </div>
-            <div class="event">
-               <i class="ion ion-ios-flame done"></i>
-               <h4 class="event__point">12:00 pm</h4>
-               <span class="event__duration">in 1 hour.</span>
-               <p class="event__description">
-                  Lunch with Paul Mccartney @Burgers House!
-               </p>
-            </div>
-            <div class="event active">
-               <i class="ion ion-ios-radio-button-on icon-in-active-mode"></i>
-               <h4 class="event__point">14:00 pm</h4>
-               <p class="event__description">
-                  Meet clients from project.
-               </p>
-            </div>
-            <div class="event">
-               <i class="ion ion-ios-flame-outline upcoming"></i>
-               <h4 class="event__point">20:45 pm</h4>
-               <span class="event__duration">in 45 minutes.</span>
-               <p class="event__description">
-                  Watch sci-fi series.
-               </p>
-            </div>
-            <div class="event">
-               <i class="ion ion-ios-flame-outline upcoming"></i>
-               <h4 class="event__point">23:15 pm</h4>
-               <span class="event__duration">in 20 minutes.</span>
-               <p class="event__description">
-                  Customer dialog on Skype.
-               </p>
-            </div>
-         </div>
-         <button class="add-event-button">
-            <span class="add-event-button__title">Add Event</span>
-
-            <span class="add-event-button__icon">
-               <i class="ion ion-ios-star-outline"></i>
-            </span> 
-
-
-         </button>
-      </div>
-   </section>
+          <!--</div>-->
+       </section>
    
 
       </div>

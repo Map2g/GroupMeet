@@ -12,15 +12,14 @@ if (!$conn) {
 }
 
 //$_POST and $_GET are keywords in PHP that are used for html form tags to get and send information from the form to the database 
-$group_name = $_POST['gname'];
-$description = $_POST['details'];
-$admin_email = $_POST['gaemail'];
+$member = $_POST['member_email'];
+$admin = $_POST['admin_email'];
+$group = $_POST['gname']; 
 
 //Verify that the email entered is associated with a registered account
-$sql  = "SELECT user_id FROM Users WHERE email IN ('$admin_email')"; //SQL statement to locate all records with matching values
+$sql  = "SELECT user_id FROM Users WHERE email IN ('$admin')"; //SQL statement to locate all records with matching values
 $result = mysqli_query($conn, $sql); //SQL statement to run query against all records and see if a record with the matching email exists
 $row = mysqli_fetch_assoc($result); //Fetch the query results for User and store the record. $row will be used to add the primary key of the Users record as the foreign key of UserID in Groups
-$query = "INSERT INTO Groups (GroupName, GroupDesc, UserID) VALUES ('". $group_name . "', '" . $description . "', ". $row["user_id"] .")"; //Upload the input fields from the form into the Groups Table
 
 //If a result is returned with the email that the user entered, the group will be created
 if (mysqli_num_rows($result) > 0) {
@@ -33,14 +32,6 @@ if (mysqli_num_rows($result) > 0) {
         echo "New record created successfully . <br>";
         echo "Group Name: " . $group_name . "<br>Description: " . $description . " " . "<br>Email " . $row["email"] . "<br>User ID: " . $row["user_id"]. "<br>";
         echo "Group ID: " . $last_id . "<br>" . "<br>";
-        
-        //If the group is successfully created, add the admin as a member of the group
-        $admin = "INSERT INTO MyGuests (CrowdID, GuestID) VALUES (". $last_id .", ". $row["user_id"] .")"; //Add the admin as a member of the group
-        if (mysqli_query($conn, $admin)){
-            echo "Admin added to group successfully" . "<br>";
-        }else {
-        echo "Error: " . $admin . "<br>" . mysqli_error($conn);
-        }
         
     } else {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);

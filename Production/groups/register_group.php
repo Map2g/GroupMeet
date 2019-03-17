@@ -17,23 +17,31 @@ $description = $_POST['details'];
 $admin_email = $_POST['gaemail'];
 
 //Verify that the email entered is associated with a registered account
-$sql  = "SELECT * FROM Users WHERE email = '$admin_email' "; //SQL statement to locate all records with matching values
+$sql  = "SELECT user_id FROM Users WHERE email IN ('$admin_email')"; //SQL statement to locate all records with matching values
 $result = mysqli_query($conn, $sql); //SQL statement to run query against all records and see if a record with the matching email exists
-$row = mysqli_fetch_assoc($result); //Fetch the query results and store them into row format for each record found
+$row = mysqli_fetch_assoc($result); //Fetch the query results for User and store the record. $row will be used to add the primary key of the Users record as the foreign key of UserID in Groups
+$query = "INSERT INTO Groups (GroupName, GroupDesc, UserID) VALUES ('". $group_name . "', '" . $description . "', ". $row["user_id"] .")"; //Upload the input fields from the form into the Groups Table
 
 //If a result is returned with the email that the user entered, the group will be created
 if (mysqli_num_rows($result) > 0) {
     echo "Record located successfully";
     echo "<br>" . "<br>";
     
-    // //Upload the input fields from the form into the Users database
-    $query = "INSERT INTO Groups (GroupName, GroupDesc, UserID) VALUES ('". $group_name . "','" . $description . "'," . $row["user_id"] . ")";
-    //echo $query;
-    
     //Run Insert command on the Groups table
     if (mysqli_query($conn, $query)) {
+        $last_id = mysqli_insert_id($conn); //Returns the last identity value inserted into a primary key column in a table. Must be placed IMMEDIATELY after the INSERT query or $last_id will be 0
         echo "New record created successfully . <br>";
-        echo "Group Name: " . $group_name . "<br>Description: " . $description . " " . "<br>Name " . $row["first_name"] . " " . $row["last_name"] . "<br>User ID: " . $row["user_id"]. "<br>";
+        echo "Group Name: " . $group_name . "<br>Description: " . $description . " " . "<br>Email " . $row["email"] . "<br>User ID: " . $row["user_id"]. "<br>";
+        echo "Group ID: " . $last_id . "<br>" . "<br>";
+        
+        //If the group is successfully created, add the admin as a member of the group
+        $admin = "INSERT INTO MyGuests (CrowdID, GuestID) VALUES (". $last_id .", ". $row["user_id"] .")"; //Add the admin as a member of the group
+        if (mysqli_query($conn, $admin)){
+            echo "Admin added to group successfully" . "<br>";
+        }else {
+        echo "Error: " . $admin . "<br>" . mysqli_error($conn);
+        }
+        
     } else {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);
     }

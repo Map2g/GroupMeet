@@ -17,7 +17,7 @@ $description = $_POST['details'];
 $admin_email = $_POST['gaemail'];
 
 //Verify that the email entered is associated with a registered account
-$sql  = "SELECT user_id FROM Users WHERE email IN ('$admin_email')"; //SQL statement to locate all records with matching values
+$sql  = "SELECT * FROM Users WHERE email IN ('$admin_email')"; //SQL statement to locate all records with matching values
 $result = mysqli_query($conn, $sql); //SQL statement to run query against all records and see if a record with the matching email exists
 $row = mysqli_fetch_assoc($result); //Fetch the query results for User and store the record. $row will be used to add the primary key of the Users record as the foreign key of UserID in Groups
 $query = "INSERT INTO Groups (GroupName, GroupDesc, UserID) VALUES ('". $group_name . "', '" . $description . "', ". $row["user_id"] .")"; //Upload the input fields from the form into the Groups Table
