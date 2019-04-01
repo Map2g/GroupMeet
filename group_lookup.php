@@ -1,49 +1,78 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "GroupMeet";
 
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+include("config.php");
+session_start();
 
-//$_POST and $_GET are keywords in PHP that are used for html form tags to get and send information from the form to the database 
-$username = $_POST['uname'];
+$sqlU  = "SELECT user_id, first_name FROM Users WHERE Users.email = '" . $_SESSION['Email'] . "'";
+$resultU = mysqli_query($conn, $sqlU); 
+$rowU = mysqli_fetch_assoc($resultU); 
+$UN = $rowU[first_name];
+//Getting User's first name.
 
 //Create query instance to select all groups associated with an account
 $sql = "SELECT 
             Users.email,
             Groups.GroupName,
-            Groups.GroupID
+            Groups.GroupID,
+            Groups.GroupDesc
         FROM 
-            Users JOIN Groups ON Users.user_id = Groups.UserID
+            Users JOIN MyGuests on Users.user_id = MyGuests.GuestID
+                JOIN Groups ON MyGuests.CrowdID = Groups.GroupID
         WHERE
-            Users.email IN ('$username')";
-            
-$result = mysqli_query($conn, $sql); //SQL statement to run query against all records and see if a record with the matching username exists
+            Users.email IN ('" . $_SESSION['Email'] . "')";
 
-//If a result is returned with the username entered, the group will be listed
-if (mysqli_num_rows($result) > 0) {
-    echo "Record located successfully";
-    echo "<br>" . "<br>";
-    
-    //Print all records found from $results query
-    //Like Reading Files, the loop will continue to find the next record until it has reached the end of the table.
-        //The new record is stored in $row as it is searched and reinitialized each time
+$title = 'My Schedule'; include("top.php");
 
-    $row = mysqli_fetch_assoc($result); //Fetch the query results and store them into row format for each record found
-    while($row){
-       echo  "Group Name: " . $row["GroupName"] . "<br>Admin: " . $row["email"]. "<br>" . "<br>";
-       $row = mysqli_fetch_assoc($result);
-    }
-
-} else {
-    echo "Record not located";
-}
-
-mysqli_close($conn);
 ?>
+
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="index.php">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active"> <?php echo $UN . '\'s' ?> Groups</li>
+        </ol>
+
+        <!-- Page Content -->
+        <h1><?php echo $UN . '\'s' ?> Groups</h1>
+        <hr>
+        
+        <!--=====Page content=========-->
+        
+        <div class="events-wrapper">
+            <?php
+            
+            $result = mysqli_query($conn, $sql); //SQL statement to run query against all records and see if a record with the matching username exists
+
+            //If a result is returned with the username entered, the group will be listed
+            if (mysqli_num_rows($result) > 0) {
+                
+                $row = mysqli_fetch_assoc($result); //Fetch the query results and store them into row format for each record found
+                
+                while($row){
+                   echo  '<a href="get_group_event.php?gid=' . $row["GroupID"] . '">';
+                    echo    '<ul class="list-group"> 
+                                <li class="list-group-item">
+                                    
+                                    <h4> Group Name: ' . $row["GroupName"] . '</h4>
+                                    
+                                    
+                                    <h6>Admin: ' . $row["email"]. '</h6>
+                                    <h4> ' . $row["GroupDesc"]. '</h4>
+                                    This stuff is ugly now but i will fix it later
+                                </li>
+                            </ul>
+                           </a>';
+                            
+                   $row = mysqli_fetch_assoc($result);
+                }
+            } else {
+                echo "You're not a member of any group.";
+            }
+            
+            mysqli_close($conn);
+            ?>
+            
+        </div> 
+
+<?php include ("bottom.php"); ?>

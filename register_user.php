@@ -1,18 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "GroupMeet";
 
 //*****************************************************************************************************
 
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-// require 'con.php';
+include("../config.php");
 
 //*****************************************************************************************************
 
@@ -55,6 +45,6 @@ mysqli_close($conn);
 ?> 
 <html>
 <head>
-<meta http-equiv="Refresh" content="4; url=/index.html" />
+<meta http-equiv="Refresh" content="4; url=/index.php" />
 </head>
 </html>

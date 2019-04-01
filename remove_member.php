@@ -1,19 +1,9 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "GroupMeet";
-
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+include("config.php");
 
 //$_POST and $_GET are keywords in PHP that are used for html form tags to get and send information from the form to the database 
 $member = $_POST['member_email'];
-$admin = $_POST['admin_email'];
+// $admin = $_POST['admin_email'];
 $group = $_POST['gname']; 
 $result = NULL;
 $row = NULL;
@@ -24,8 +14,7 @@ $guest_lookup_row = NULL;
 $targetFound = FALSE;
 
 //Verify that the email entered is associated with a registered account
-$sql  = "SELECT user_id FROM Users WHERE Users.email IN ('$admin')"; //SQL statement to locate all records with matching values
-if (mysqli_query($conn, $sql)) {
+$sql  = "SELECT user_id FROM Users WHERE Users.email = '" . $_SESSION['Email'] . "'";
     $result = mysqli_query($conn, $sql); //SQL statement to run query against all records to see if a record with the matching email exists
     $row = mysqli_fetch_assoc($result); //Fetch the query results for User and convert the matching records into rows . $row will be used to locate the groups that the admin owns with their primary key
    

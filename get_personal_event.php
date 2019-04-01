@@ -1,136 +1,104 @@
 <?php 
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "GroupMeet";
+include("config.php");
+session_start();
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);     //Does this have anything to do with mysql lite?
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-//Know which user's events to pull. Will we choose this based on session ID or cookies?
-$username = $_POST['userID'];
+$sqlU  = "SELECT user_id, first_name FROM Users WHERE Users.email = '" . $_SESSION['Email'] . "'";
+$resultU = mysqli_query($conn, $sqlU); //SQL statement to run query against all records and see if a record with the matching email exists
+$row = mysqli_fetch_assoc($resultU); //Fetch the query results for User and store the record. $row will be used to add the primary key of the Users record as the foreign key of UserID in Groups
+$U_ID = $row[user_id];
+$UN = $row[first_name];
 
 $sqlAll = "SELECT EventName, EventDesc, EventDate, EventTime 
-        FROM Event 
-        WHERE UserID=24
-        ORDER BY DATE(EventDate), TIME(EventTime)";             //24 is placeholder for testing 
+        FROM 
+            Event 
+        WHERE 
+            UserID= '" . $U_ID . "'
+                AND
+            EventDate >= CURDATE()
+        ORDER BY 
+            DATE(EventDate) ASC,
+            TIME(EventTime) ASC"; 
         
 $sqlDaily = "SELECT EventName, EventDesc, EventDate, EventTime 
-            FROM Event 
-            WHERE UserID=24
-            AND DATE(EventDate) = CURDATE()
-            ORDER BY TIME(EventTime)";
+            FROM 
+                Event 
+            WHERE 
+                UserID= '" . $U_ID . "'
+                    AND 
+                DATE(EventDate) = CURDATE()
+            ORDER BY 
+                TIME(EventTime) DESC";
+
+$sqlWeekly = "SELECT EventName, EventDesc, EventDate, EventTime 
+            FROM 
+                Event 
+            WHERE
+                UserID = '" . $U_ID . "'
+                    AND
+                YEARWEEK(EventDate) = YEARWEEK(NOW()) 
+                    AND 
+                EventDate >= CURDATE()
+            ORDER BY 
+                DATE(EventDate) ASC,
+                TIME(EventTime) ASC";
             
 $sqlMonthly = "SELECT EventName, EventDesc, EventDate, EventTime 
-            FROM Event 
-            WHERE UserID=24
-            AND DATE(EventDate) = MONTH(CURDATE())
-            ORDER BY DATE(EventDate)";
+            FROM 
+                Event 
+            WHERE 
+                UserID= '" . $U_ID . "'
+                    AND
+                YEAR(EventDate) = YEAR(NOW()) 
+                    AND 
+                Month(EventDate) = Month(NOW())
+                    AND 
+                EventDate >= CURDATE()
+            ORDER BY 
+                DATE(EventDate) ASC,
+                TIME(EventTime) ASC";
             
-$sqlWeekly = "SELECT EventName, EventDesc, EventDate, EventTime 
-            FROM Event 
-            WHERE UserID=24
-            AND DATE(EventDate) BETWEEN CURDATE() AND CURDATE() + 7  //fix
-            ORDER BY DATE(EventDate)";
+    /*When a button is pressed, the $_POST['<input /> name = buttonName'] is recorded in a form. 
+    When the php page is requested from the server, it will return the web page with the desired
+    MySQL query based on the fields of the form passed to the php file
+    */
+    if (isset($_POST['viewDailyButton'])) {
+         $currentSql = $sqlDaily;
+         $viewTitle = "Daily";
+    }
+    else if (isset($_POST['viewWeeklyButton'])) {;
+        $currentSql = $sqlWeekly;
+        $viewTitle = "Weekly";
+    }
+    else  if (isset($_POST['viewMonthlyButton'])) {
+         $currentSql = $sqlMonthly;
+         $viewTitle = "Monthly";
+    }
+    else  if (isset($_POST['viewAllButton'])) {
+         $currentSql = $sqlAll;
+         $viewTitle = "All";
+    }
+    else{
+        $currentSql = $sqlAll; //Load all events by default
+        $viewTitle = "All";
+    }
         
-$resultAll = mysqli_query($conn, $sqlAll);
-$resultDay = mysqli_query($conn, $sqlDaily);
-$resultMon = mysqli_query($conn, $sqlMon);
-$resultWeek = mysqli_query($conn, $sqlWeekly);
+
+//GroupMeet HTML template
+$title = 'My Schedule'; include("top.php");
 
 ?>
-
-<!DOCTYPE html>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <title>GroupMeet - My Schedule</title>
-
-  <!-- Custom fonts for this template-->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
-  <!-- Page level plugin CSS-->
-  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-  
-
-  <!-- Custom styles for this template-->
-  <link href="css/sb-admin.css" rel="stylesheet">
-  <link href="mysched.css" rel="stylesheet">
-
-</head>
-
-<body id="page-top">
-
-  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-
-    <a class="navbar-brand mr-1" href="index.html">GroupMeet</a>
-
-    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
-      <i class="fas fa-bars"></i>
-    </button>
-
-  </nav>
-
-  <div id="wrapper">
-
-    <!-- Sidebar -->
-    <ul class="sidebar navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="index.html">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span>
-        </a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Pages</span>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <h6 class="dropdown-header">Login Screens:</h6>
-          <a class="dropdown-item" href="login.html">Login</a>
-          <a class="dropdown-item" href="register.html">Register</a>
-          <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Group Management:</h6>
-          <a class="dropdown-item" href="register_group.html">Create a Group</a>
-          <a class="dropdown-item" href="blank.html">View Group</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="tables.html">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Tables</span></a>
-      </li>
-    </ul>
-  
-    <div id="content-wrapper">
-
-      <div class="container-fluid">
 
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="index.html">Dashboard</a>
+            <a href="index.php">Dashboard</a>
           </li>
-          <li class="breadcrumb-item active">My Schedule</li>
+          <li class="breadcrumb-item active"> <?php echo $UN . '\'s' ?> Schedule</li>
         </ol>
 
         <!-- Page Content -->
-        <h1>My Schedule</h1>
+        <h1><?php echo $UN . '\'s' ?> Schedule</h1>
         <hr>
         
          <!--======= Today =======-->
@@ -157,37 +125,42 @@ $resultWeek = mysqli_query($conn, $sqlWeekly);
        <!--======== View Option Buttons =======-->
 
        <center>
-         <div class="button_holder">
-           <button id="viewDaily" class="stylishButton">Daily</button>
-           <button id="viewWeekly" class="stylishButton">Weekly</button>
-           <button id="viewMonthly" class="stylishButton">Monthly</button>
-         </div>
+        <div class="button_holder">
+            <form action="get_personal_event.php" method="post">
+                <input id="viewDailyButton" class="stylishButton" name="viewDailyButton"  type="submit" value="Daily"></input>
+                <input id="viewWeeklyButton" class="stylishButton" name="viewWeeklyButton"  type="submit" value="Weekly"></input>
+                <input id="viewMonthlyButton" class="stylishButton" name="viewMonthlyButton"  type="submit" value="Monthly"></input>
+                <input id="viewAllButton" class="stylishButton" name="viewAllButton"  type="submit" value="All"></input>
+            </form>
+        </div>
        </center>
        
        <!--======= Upcoming Events =======-->
       
        <section class="upcoming-events">
           <div class="upcoming-events-head">
-            Lastest Events
+            <?php
+                echo $viewTitle . " Events";
+            ?>
           </div>
              <div class="events-wrapper">
                 
                 <?php
                 
-                //$result = mysqli_query($conn, $sqlAll);
+                $resultAll = mysqli_query($conn, $currentSql);
 
                 if (mysqli_num_rows($resultAll) > 0) {
-                    $row = mysqli_fetch_assoc($resultAll);
-                    while($row) {
-                        $eDate = $row["EventDate"];
-                        $eTime = $row["EventTime"];
+                    $rowAll = mysqli_fetch_assoc($resultAll);
+                    while($rowAll) {
+                        $eDate = $rowAll["EventDate"];
+                        $eTime = $rowAll["EventTime"];
                       echo '<div class="event">
-                                <h4 class="event__point">' . $row["EventName"] .  '</h4>
+                                <h4 class="event__point">' . $rowAll["EventName"] .  '</h4>
                                 <span class="event__duration">'. $eDate . ' ' . $eTime . '</span>
-                                <p class="event__description">'. $row["EventDesc"] . '</p>
+                                <p class="event__description">'. $rowAll["EventDesc"] . '</p>
                             </div>';
 
-                      $row = mysqli_fetch_assoc($resultAll);
+                      $rowAll = mysqli_fetch_assoc($resultAll);
                     }
                 } else {
                     echo "You have no events planned!";
@@ -198,60 +171,8 @@ $resultWeek = mysqli_query($conn, $sqlWeekly);
                
              </div>
                 
-          <!--</div>-->
+         <!--</div>-->
        </section>
 
-      </div>
-      <!-- /.container-fluid -->
-
-      <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright © GroupMeet 2019</span>
-          </div>
-        </div>
-      </footer>
-
-    </div>
-    <!-- /.content-wrapper -->
-
-  </div>
-  <!-- /#wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin.min.js"></script>
-
-</body>
-</html>
+<!--Rest of html template-->
+<?php include ("bottom.php"); ?>

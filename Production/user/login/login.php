@@ -4,6 +4,7 @@ $username = "root";
 $password = "";
 $dbname = "GroupMeet";
 
+session_start();
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
@@ -26,7 +27,9 @@ echo $row;
 if (mysqli_num_rows($result) > 0) {
     echo "You have been logged in";
     echo "<br>" . "<br>";
-    setcookie("loginCredentials", $email, time() * 7200);
+    session_register("email");
+    $_SESSION['login_user'] = $email;
+    //setcookie("loginCredentials", $email, time() * 7200);
 }
 else{
     echo "Incorrect email or password";

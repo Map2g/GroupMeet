@@ -1,115 +1,156 @@
 <?php 
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "GroupMeet";
+include("config.php");
+session_start();
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);     //Does this have anything to do with mysql lite?
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+/*When the page is reloaded with filters, do not over write the session variable since it is passed from group_lookup.php
+    When the page is reloaded, since  $_GET['gid'] came from group_lookup.php, it only is passed once.
+    To pass $_GET['gid'] from  group_lookup.php, it must be stored in a session.
+    If the $_GET['gid'] is empty, that means that a filter button was selected from get_group_event.php,
+    so the $_SESSION['group'] will not be altered. However, if $_GET['gid'] is not empty, that means the user
+    selected a group from group_lookup.php and therefore $_SESSION['group'] must be updated to reflect the group
+    the user selected.
+*/
+if(!empty($_GET['gid'])){
+    $_SESSION['group'] =  $_GET['gid']; //acquire the associated group clicked by user
 }
 
-//Know which user's events to pull. Will we choose this based on session ID or cookies?
-$username = $_POST['userID'];
+//Acquire the id of the user in session
+$sqlU  = "SELECT user_id, first_name FROM Users WHERE Users.email = '" . $_SESSION['Email'] . "'";
+$resultU = mysqli_query($conn, $sqlU); //SQL statement to run query against all records and see if a record with the matching email exists
+$row = mysqli_fetch_assoc($resultU); //Fetch the query results for User and store the record. $row will be used to add the primary key of the Users record as the foreign key of UserID in Groups
+$U_ID = $row[user_id];
 
-$sql = "SELECT GrpEventName, GrpEventDescription, GrpEventDate, GrpEventTime 
-        FROM GroupEvent 
-        WHERE GroupID=50";             //50 is placeholder for testing 
+$sqlAll = "SELECT 
+            GrpEventName,
+            GrpEventDescription,
+            GrpEventDate,
+            GrpEventTime
+         FROM 
+            Users JOIN MyGuests ON Users.user_id = MyGuests.GuestID 
+                JOIN Groups ON MyGuests.CrowdID = Groups.GroupID 
+                    JOIN GroupEvent ON Groups.GroupID = GroupEvent.GroupID 
+        WHERE 
+            Users.user_id= '" . $U_ID . "'
+                AND
+            Groups.GroupID = '" . $_SESSION['group'] . "' 
+                AND
+            GrpEventDate >= CURDATE()
+                AND 
+            TIME(GrpEventTime) >= CURTIME()
+        ORDER BY 
+            DATE(GrpEventDate) ASC,
+            TIME(GrpEventTime) ASC"; 
+        
+$sqlDaily = "SELECT 
+            GrpEventName,
+            GrpEventDescription,
+            GrpEventDate,
+            GrpEventTime
+            FROM 
+                Users JOIN MyGuests ON Users.user_id = MyGuests.GuestID 
+                    JOIN Groups ON MyGuests.CrowdID = Groups.GroupID 
+                        JOIN GroupEvent ON Groups.GroupID = GroupEvent.GroupID 
+            WHERE 
+                Users.user_id= '" . $U_ID . "'
+                    AND
+                Groups.GroupID = '" . $_SESSION['group'] . "' 
+                    AND
+                DATE(GrpEventDate) = CURDATE()
+                    AND 
+                TIME(GrpEventTime) >= CURTIME()
+            ORDER BY 
+                TIME(GrpEventTime) ASC";
 
+$sqlWeekly = "SELECT 
+            GrpEventName,
+            GrpEventDescription,
+            GrpEventDate,
+            GrpEventTime
+            FROM 
+                Users JOIN MyGuests ON Users.user_id = MyGuests.GuestID 
+                    JOIN Groups ON MyGuests.CrowdID = Groups.GroupID 
+                        JOIN GroupEvent ON Groups.GroupID = GroupEvent.GroupID 
+            WHERE 
+                Users.user_id= '" . $U_ID . "'
+                    AND
+                Groups.GroupID = '" . $_SESSION['group'] . "' 
+                    AND
+                YEARWEEK(GrpEventDate) = YEARWEEK(NOW()) 
+                    AND 
+                GrpEventDate >= CURDATE()
+                    AND 
+                TIME(GrpEventTime) >= CURTIME()
+            ORDER BY 
+                DATE(GrpEventDate) ASC,
+                TIME(GrpEventTime) ASC";
+            
+$sqlMonthly = "SELECT 
+            GrpEventName,
+            GrpEventDescription,
+            GrpEventDate,
+            GrpEventTime
+            FROM 
+                Users JOIN MyGuests ON Users.user_id = MyGuests.GuestID 
+                    JOIN Groups ON MyGuests.CrowdID = Groups.GroupID 
+                        JOIN GroupEvent ON Groups.GroupID = GroupEvent.GroupID 
+            WHERE 
+                Users.user_id= '" . $U_ID . "'
+                    AND
+                Groups.GroupID = '" . $_SESSION['group'] . "' 
+                    AND
+                YEAR(GrpEventDate) = YEAR(NOW()) 
+                    AND 
+                Month(GrpEventDate) = Month(NOW())
+                    AND 
+                GrpEventDate >= CURDATE()
+                    AND 
+                TIME(GrpEventTime) >= CURTIME()
+            ORDER BY 
+                DATE(GrpEventDate) ASC,
+                TIME(GrpEventTime) ASC";
+
+    /*When a button is pressed, the $_POST['<input /> name = buttonName'] is recorded in a form. 
+    When the php page is requested from the server, it will return the web page with the desired
+    MySQL query based on the fields of the form passed to the php file
+    */
+    if (isset($_POST['viewDailyButton'])) {
+         $currentSql = $sqlDaily;
+         $viewTitle = "Daily";
+    }
+    else if (isset($_POST['viewWeeklyButton'])) {
+        $currentSql = $sqlWeekly;
+        $viewTitle = "Weekly";
+    }
+    else  if (isset($_POST['viewMonthlyButton'])) {
+         $currentSql = $sqlMonthly;
+         $viewTitle = "Monthly";
+    }
+    else  if (isset($_POST['viewAllButton'])) {
+         $currentSql = $sqlAll;
+         $viewTitle = "All";
+    }
+    else {
+        $currentSql = $sqlAll; //Load all events by default
+        $viewTitle = "All";
+    }
+//GroupMeet HTML template
+$title = 'Group Schedule'; include("top.php");
 ?>
-
-<!DOCTYPE html>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <title>GroupMeet - Group Schedule</title>
-
-  <!-- Custom fonts for this template-->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
-  <!-- Page level plugin CSS-->
-  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-  
-
-  <!-- Custom styles for this template-->
-  <link href="css/sb-admin.css" rel="stylesheet">
-  <link href="mysched.css" rel="stylesheet">
-
-</head>
-
-<body id="page-top">
-
-  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-
-    <a class="navbar-brand mr-1" href="index.html">GroupMeet</a>
-
-    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
-      <i class="fas fa-bars"></i>
-    </button>
-
-  </nav>
-
-  <div id="wrapper">
-
-    <!-- Sidebar -->
-    <ul class="sidebar navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="index.html">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span>
-        </a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Pages</span>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <h6 class="dropdown-header">Login Screens:</h6>
-          <a class="dropdown-item" href="login.html">Login</a>
-          <a class="dropdown-item" href="register.html">Register</a>
-          <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Group Management:</h6>
-          <a class="dropdown-item" href="register_group.html">Create a Group</a>
-          <a class="dropdown-item" href="get_group_event.php">View Group Schedule</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="tables.html">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Tables</span></a>
-      </li>
-    </ul>
-  
-    <div id="content-wrapper">
-
-      <div class="container-fluid">
 
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="index.html">Dashboard</a>
+            <a href="index.php">Dashboard</a>
           </li>
           <li class="breadcrumb-item">
-            <a href="view_group.html">My Groups</a>
+            <a href="group_lookup.php">My Groups</a>
           </li>
           <li class="breadcrumb-item active">Group Schedule</li>
         </ol>
 
         <!-- Page Content -->
-        <h1>Group Schedule</h1>
+        <h1><?php echo $_SESSION['group'] . '\'s' ?> Schedule</h1>
         <hr>
         
          <!--======= Today =======-->
@@ -119,10 +160,20 @@ $sql = "SELECT GrpEventName, GrpEventDescription, GrpEventDate, GrpEventTime
           <h3 class="date-title"><script>document.write(new Date().toDateString());</script></h3>
           <div class="plus-icon2">
               
+             <button id="viewMembers" class="stylishButton">
+                Member List
+             </button>
+              
              <button id="addEvent" class="stylishButton">
                 <i class="fa fa-plus"></i>
                 Add Event
              </button>
+             
+            <script type="text/javascript">
+              document.getElementById("viewMembers").onclick = function () {
+              window.location.href = "view_members.php";
+              };
+            </script>
              
             <script type="text/javascript">
               document.getElementById("addEvent").onclick = function () {
@@ -137,11 +188,14 @@ $sql = "SELECT GrpEventName, GrpEventDescription, GrpEventDate, GrpEventTime
        <!--======== View Option Buttons =======-->
 
        <center>
-         <div class="button_holder">
-           <button id="viewDaily" class="stylishButton">Daily</button>
-           <button id="viewWeekly" class="stylishButton">Weekly</button>
-           <button id="viewMonthly" class="stylishButton">Monthly</button>
-         </div>
+        <div class="button_holder">
+            <form action= "get_group_event.php" method="post">
+                <input id="viewDailyButton" class="stylishButton" name="viewDailyButton"  type="submit" value = "Daily"></input>
+                <input id="viewWeeklyButton" class="stylishButton" name="viewWeeklyButton"  type="submit" value = "Weekly"></input>
+                <input id="viewMonthlyButton" class="stylishButton" name="viewMonthlyButton"  type="submit" value = "Monthly"></input>
+                <input id="viewAllButton" class="stylishButton" name="viewAllButton"  type="submit" value = "All"></input>
+            </form>
+        </div>
        </center>
        
         
@@ -149,13 +203,17 @@ $sql = "SELECT GrpEventName, GrpEventDescription, GrpEventDate, GrpEventTime
     
        <section class="upcoming-events">
           <div class="upcoming-events-head">
-            <h2>All Events</h2>
+            <h2>
+                <?php
+                    echo $viewTitle . " Events";
+                ?>
+            </h2>
           </div>
              <div class="events-wrapper">
                
                <?php
                $radioIdent = 1;
-               $result = mysqli_query($conn, $sql);
+               $result = mysqli_query($conn, $currentSql);
                
                if (mysqli_num_rows($result) > 0) {
                   $row = mysqli_fetch_assoc($result);
@@ -195,59 +253,5 @@ $sql = "SELECT GrpEventName, GrpEventDescription, GrpEventDate, GrpEventTime
           <!--</div>-->
        </section>
    
-
-      </div>
-      <!-- /.container-fluid -->
-
-      <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright © GroupMeet 2019</span>
-          </div>
-        </div>
-      </footer>
-
-    </div>
-    <!-- /.content-wrapper -->
-
-  </div>
-  <!-- /#wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin.min.js"></script>
-
-</body>
-
-</html>
+<!--Rest of html template-->
+<?php include("bottom.php");?>
