@@ -24,13 +24,12 @@
 }
 
 .plus-icon2 {
-   position: absolute;
+   position: relative;
    top: 50%;
    transform: translateY(-50%);
    right: 40px;
    cursor: pointer;
    transition: all 350ms ease;
-   transition-timing-function: cubic-bezier(0.05,1.8,1,1.57);
 }
 
 i2 {
@@ -47,63 +46,79 @@ i2 {
    justify-content: center;
 }
 
-      .upcoming-events-head {
-         color: #333;
-         font-size: 35px;
-         margin-bottom: 30px;
-         font-weight: 500;
-         line-height: 1.2;
-         position: relative;
-      }
-      
-      .events-wrapper {
-         margin-bottom: 30px;
-      }
-         .event {
-            position: relative;
-            margin-bottom: 25px;
-            padding-left:58px;
-            cursor: pointer;
-         }
-            .i3 {
-               font-size: 20px;
-               font-weight: 100;
-               position: absolute;
-               left: 0;
-               top: -4px;
-            }
-            .event__point {
-               margin: 0;
-               color: #555;
-               font-size: 20px;
-               font-weight: 800;
-               letter-spacing: 1px;
-            }
-            
-            .event__duration {
-               position: absolute;
-               top: 5px;
-               right: 0;
-               color: #999;
-               font-size: 15px;
-               font-weight: 800;
-               font-style: italic;
-            }
-            
-            .event__description {
-               margin-top: 10px;
-               color: #919294;      /*Pick darker color later*/
-               font-size: 15px;
-               font-weight: 300;
-            }
-               .i4 {
-                  position: absolute;
-                  left: 25px;
-                  top: 17px;
-               }  
+.upcoming-events-head {
+color: #333;
+font-size: 35px;
+margin-bottom: 30px;
+font-weight: 500;
+line-height: 1.2;
+position: relative;
+}
+
+.events-wrapper {
+margin-bottom: 30px;
+}
+.event {
+position: relative;
+margin-bottom: 25px;
+padding-left:58px;
+cursor: pointer;
+}
+
+.i3 {
+font-size: 20px;
+font-weight: 100;
+position: absolute;
+left: 0;
+top: -4px;
+}
+
+.event__point {
+margin: 0;
+color: #555;
+font-size: 20px;
+font-weight: 800;
+letter-spacing: 1px;
+}
+
+.event__duration {
+position: absolute;
+top: 5px;
+right: 40px;
+color: #999;
+font-size: 16px;
+font-weight: 800;
+/*font-style: italic;*/
+}
+
+.event__edit {
+position: absolute;
+top: 5px;
+right: 0;
+color: #999;
+font-size: 15px;
+font-weight: 800;
+}
+
+.event__description {
+margin-top: 10px;
+color: #282b30;      /*Pick darker color later*/
+font-size: 15px;
+font-weight: 500;
+}
+
+.i4 {
+position: absolute;
+left: 25px;
+top: 17px;
+}  
+
+/*.sneaky_a {*/
+   
+/*}*/
 
 
-/* Voting buttons are radio for now but if vating is actually going to matter they
+/* Voting buttons are radio for now but if voting is actually going to matter they
    will have to be buttons that do something like update a vote quantity in the dB
    by one or something... */
 

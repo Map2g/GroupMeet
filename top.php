@@ -15,7 +15,7 @@
 
   <!-- Custom styles for this template-->
   <link href="sb-admin.css" rel="stylesheet">
-  <link href="mysched.css" rel="stylesheet">
+  <link href="css/mysched.css" rel="stylesheet">
   <link href="groupAdmin.css" rel="stylesheet">
 
 </head>
@@ -29,57 +29,6 @@
     <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
       <i class="fas fa-bars"></i>
     </button>
-
-    <!-- Navbar Search 
-    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-        <div class="input-group-append">
-          <button class="btn btn-primary" type="button">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-      </div>
-    </form>
-
-    <!-- Navbar 
-    <ul class="navbar-nav ml-auto ml-md-0">
-      <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-bell fa-fw"></i>
-          <span class="badge badge-danger">9+</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-envelope fa-fw"></i>
-          <span class="badge badge-danger">7</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown no-arrow">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-user-circle fa-fw"></i>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-          <a class="dropdown-item" href="#">Settings</a>
-          <a class="dropdown-item" href="#">Activity Log</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
-        </div>
-      </li>
-    </ul>-->
 
   </nav>
 
@@ -109,21 +58,33 @@
           <a class="dropdown-item" href="view_group.php">View Group</a>
         </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="register_group.html">
+            <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-folder"></i>
-          <span>Create A Group</span></a>
+          <span>Groups</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+          <!--<h6 class="dropdown-header">Login Screens:</h6>-->
+          <!--<a class="dropdown-item" href="login.html">Login</a>-->
+          <!--<a class="dropdown-item" href="register_user.html">Register</a>-->
+          <!--<a class="dropdown-item" href="forgot-password.html">Forgot Password</a>-->
+          <!--<div class="dropdown-divider"></div>-->
+          <h6 class="dropdown-header">Group Management:</h6>
+          <a class="dropdown-item" href="register_group.html">Create a Group</a>
+          <a class="dropdown-item" href="group_lookup.php">View Groups</a>
+          <a class="dropdown-item" href="group_lookup_admin.php">Group Admin</a>
+        </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="group_lookup.php">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>View Your Groups</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="tables.html">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Tables</span></a>
-      </li>
+      <!--<li class="nav-item">-->
+      <!--  <a class="nav-link" href="register_group.html">-->
+      <!--    <i class="fas fa-fw fa-folder"></i>-->
+      <!--    <span>Create A Group</span></a>-->
+      <!--</li>-->
+      <!--<li class="nav-item">-->
+      <!--  <a class="nav-link" href="group_lookup.php">-->
+      <!--    <i class="fas fa-fw fa-folder"></i>-->
+      <!--    <span>View Your Groups</span></a>-->
+      <!--</li>-->
       <li class="nav-item">
         <a class="nav-link" href="logout.php">
           <i class="fas fa-fw fa-table"></i>

@@ -91,4 +91,4 @@ $title = 'Dashboard'; require ("top.php"); session_start() ;
 <!--</html>-->
 
 <!--Rest of html template-->
-<?php include ("bottom.php"); require ("session.php");?>
+<?php include ("bottom.php");?>

@@ -15,17 +15,35 @@ if(!empty($_GET['gid'])){
     $_SESSION['group'] =  $_GET['gid']; //acquire the associated group clicked by user
 }
 
-//Acquire the id of the user in session
 $sqlU  = "SELECT user_id, first_name FROM Users WHERE Users.email = '" . $_SESSION['Email'] . "'";
 $resultU = mysqli_query($conn, $sqlU); //SQL statement to run query against all records and see if a record with the matching email exists
-$row = mysqli_fetch_assoc($resultU); //Fetch the query results for User and store the record. $row will be used to add the primary key of the Users record as the foreign key of UserID in Groups
-$U_ID = $row[user_id];
+$rowU = mysqli_fetch_assoc($resultU); //Fetch the query results for User and store the record. $row will be used to add the primary key of the Users record as the foreign key of UserID in Groups
+$U_ID = $rowU[user_id];
 
-$sqlAll = "SELECT 
-            GrpEventName,
-            GrpEventDescription,
-            GrpEventDate,
-            GrpEventTime
+$sqlG = "SELECT GroupName FROM Groups WHERE Groups.GroupID = '" . $_SESSION['group'] . "'";
+$resultG = mysqli_query($conn, $sqlG);
+$rowG = mysqli_fetch_assoc($resultG);
+$G_Name = $rowG[GroupName];
+
+
+/*--------------Get list of members in group----------------------------------------*/
+$member_list = 
+            "SELECT 
+                user_id,
+                first_name, 
+                last_name
+            FROM 
+                Users INNER JOIN MyGuests ON Users.user_id = MyGuests.GuestID
+            WHERE 
+                MyGuests.CrowdID = '" . $_SESSION['group'] . "' 
+                    AND
+                MyGuests.GuestID != '" . $U_ID . "' ";
+
+$group_members = mysqli_query($conn, $member_list);     
+$group_members_row = mysqli_fetch_assoc($group_members); 
+
+/*--------------Get list of events in group. Different filters ---------------------------*/
+$sqlAll = "SELECT *
          FROM 
             Users JOIN MyGuests ON Users.user_id = MyGuests.GuestID 
                 JOIN Groups ON MyGuests.CrowdID = Groups.GroupID 
@@ -34,19 +52,11 @@ $sqlAll = "SELECT
             Users.user_id= '" . $U_ID . "'
                 AND
             Groups.GroupID = '" . $_SESSION['group'] . "' 
-                AND
-            GrpEventDate >= CURDATE()
-                AND 
-            TIME(GrpEventTime) >= CURTIME()
         ORDER BY 
-            DATE(GrpEventDate) ASC,
-            TIME(GrpEventTime) ASC"; 
+            GrpEventDate ASC,
+            GrpEventTime ASC";
         
-$sqlDaily = "SELECT 
-            GrpEventName,
-            GrpEventDescription,
-            GrpEventDate,
-            GrpEventTime
+$sqlDaily = "SELECT *
             FROM 
                 Users JOIN MyGuests ON Users.user_id = MyGuests.GuestID 
                     JOIN Groups ON MyGuests.CrowdID = Groups.GroupID 
@@ -56,18 +66,14 @@ $sqlDaily = "SELECT
                     AND
                 Groups.GroupID = '" . $_SESSION['group'] . "' 
                     AND
-                DATE(GrpEventDate) = CURDATE()
-                    AND 
-                TIME(GrpEventTime) >= CURTIME()
+                GrpEventDate = CURDATE()
+                    AND
+                GrpEventTime >= CURTIME()
             ORDER BY 
-                TIME(GrpEventTime) ASC";
+                GrpEventTime ASC";
 
-$sqlWeekly = "SELECT 
-            GrpEventName,
-            GrpEventDescription,
-            GrpEventDate,
-            GrpEventTime
-            FROM 
+$sqlWeekly = "SELECT *
+            FROM
                 Users JOIN MyGuests ON Users.user_id = MyGuests.GuestID 
                     JOIN Groups ON MyGuests.CrowdID = Groups.GroupID 
                         JOIN GroupEvent ON Groups.GroupID = GroupEvent.GroupID 
@@ -79,17 +85,13 @@ $sqlWeekly = "SELECT
                 YEARWEEK(GrpEventDate) = YEARWEEK(NOW()) 
                     AND 
                 GrpEventDate >= CURDATE()
-                    AND 
-                TIME(GrpEventTime) >= CURTIME()
+                    OR
+                (GrpEventDate = CURDATE() AND GrpEventTime >= CURTIME())
             ORDER BY 
-                DATE(GrpEventDate) ASC,
-                TIME(GrpEventTime) ASC";
+                GrpEventDate ASC,
+                GrpEventTime ASC";
             
-$sqlMonthly = "SELECT 
-            GrpEventName,
-            GrpEventDescription,
-            GrpEventDate,
-            GrpEventTime
+$sqlMonthly = "SELECT *
             FROM 
                 Users JOIN MyGuests ON Users.user_id = MyGuests.GuestID 
                     JOIN Groups ON MyGuests.CrowdID = Groups.GroupID 
@@ -101,14 +103,15 @@ $sqlMonthly = "SELECT
                     AND
                 YEAR(GrpEventDate) = YEAR(NOW()) 
                     AND 
-                Month(GrpEventDate) = Month(NOW())
+                MONTH(GrpEventDate) = Month(NOW())
                     AND 
                 GrpEventDate >= CURDATE()
-                    AND 
-                TIME(GrpEventTime) >= CURTIME()
+                    OR
+                (GrpEventDate = CURDATE() AND GrpEventTime >= CURTIME())
             ORDER BY 
-                DATE(GrpEventDate) ASC,
-                TIME(GrpEventTime) ASC";
+                GrpEventDate ASC,
+                GrpEventTime ASC";
+/*----------------------------------------------------------------------------------*/
 
     /*When a button is pressed, the $_POST['<input /> name = buttonName'] is recorded in a form. 
     When the php page is requested from the server, it will return the web page with the desired
@@ -131,9 +134,11 @@ $sqlMonthly = "SELECT
          $viewTitle = "All";
     }
     else {
-        $currentSql = $sqlAll; //Load all events by default
-        $viewTitle = "All";
+        $currentSql = $sqlWeekly; //Default view is weekly.
+        $viewTitle = "Weekly";
     }
+    
+    
 //GroupMeet HTML template
 $title = 'Group Schedule'; include("top.php");
 ?>
@@ -150,7 +155,7 @@ $title = 'Group Schedule'; include("top.php");
         </ol>
 
         <!-- Page Content -->
-        <h1><?php echo $_SESSION['group'] . '\'s' ?> Schedule</h1>
+        <h1><?php echo  $G_Name . '\'s'?> Schedule</h1>
         <hr>
         
          <!--======= Today =======-->
@@ -158,30 +163,40 @@ $title = 'Group Schedule'; include("top.php");
        <section class="today-box" id="today-box">
           <span class="breadcrumb2">Today</span>
           <h3 class="date-title"><script>document.write(new Date().toDateString());</script></h3>
-          <div class="plus-icon2">
               
-             <button id="viewMembers" class="stylishButton">
-                Member List
-             </button>
-              
-             <button id="addEvent" class="stylishButton">
-                <i class="fa fa-plus"></i>
-                Add Event
-             </button>
+            <div class="plus-icon2">
+            
+                 <button id="addEvent" class="stylishButton">
+                    <i class="fa fa-plus"></i>
+                    Add Event
+                 </button>
+                
+                <br><br>
+                
+                <div class="dropdown">
+                 <button class="btn btn-secondary dropdown-toggle" type="button" id="viewMembers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Member List
+                 </button>
+                    <div class="dropdown-menu" aria-labelledby="viewMembers">
+                     
+                     <?php
+                     while($group_members_row){
+                            echo '<a class="dropdown-item">' . $group_members_row["first_name"] . " " . $group_members_row["last_name"] . ' </a>';
+                            $group_members_row = mysqli_fetch_assoc($group_members);
+                     }
+                     ?>
+                     
+                    </div>
+                </div>
+            
+            </div>
+            
+                <script type="text/javascript">
+                  document.getElementById("addEvent").onclick = function () {
+                  window.location.href = "register_group_event.html";
+                  };
+                </script>
              
-            <script type="text/javascript">
-              document.getElementById("viewMembers").onclick = function () {
-              window.location.href = "view_members.php";
-              };
-            </script>
-             
-            <script type="text/javascript">
-              document.getElementById("addEvent").onclick = function () {
-              window.location.href = "register_group_event.html";
-              };
-            </script>
-             
-          </div>
        </section>
         
         
@@ -199,15 +214,15 @@ $title = 'Group Schedule'; include("top.php");
        </center>
        
         
-       <!--======= Upcoming Events =======-->
+       <!--======= Events Container =======-->
     
        <section class="upcoming-events">
           <div class="upcoming-events-head">
-            <h2>
+            <!--<h2>-->
                 <?php
                     echo $viewTitle . " Events";
                 ?>
-            </h2>
+            <!--</h2>-->
           </div>
              <div class="events-wrapper">
                
@@ -218,8 +233,8 @@ $title = 'Group Schedule'; include("top.php");
                if (mysqli_num_rows($result) > 0) {
                   $row = mysqli_fetch_assoc($result);
                   while($row) {
-                        $eDate = $row["GrpEventDate"];
-                        $eTime = $row["GrpEventTime"];
+                        $eDate = date("D, n/j/Y", strtotime($row["GrpEventDate"]));
+                        $eTime = date("g:i A", strtotime($row["GrpEventTime"]));
                       echo '<div class="event">
                         <div class="i3">
                           <div class="hiddenradio">
@@ -234,7 +249,12 @@ $title = 'Group Schedule'; include("top.php");
                           </div>
                          </div>
                           <h4 class="event__point">' . $row["GrpEventName"] .  '</h4>
-                          <span class="event__duration">'. $row["GrpEventDate"] . ' ' . $row["GrpEventTime"] . '</span>
+                          <span class="event__duration">'. $eDate . ' ' . $eTime . '</span>
+                          <span class="event__edit">
+                                    <a href="edit_group_event.php?id=' . $row["GrpEventID"] . '" style="text-decoration:none">
+                                        <span class="glyphicon">&#x270f;</span>
+                                    </a>
+                          </span>
                           <p class="event__description">'. $row["GrpEventDescription"] . '</p>
                       </div>';
                       

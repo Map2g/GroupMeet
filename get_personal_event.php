@@ -9,28 +9,28 @@ $row = mysqli_fetch_assoc($resultU); //Fetch the query results for User and stor
 $U_ID = $row[user_id];
 $UN = $row[first_name];
 
-$sqlAll = "SELECT EventName, EventDesc, EventDate, EventTime 
+$sqlAll = "SELECT *
         FROM 
             Event 
         WHERE 
             UserID= '" . $U_ID . "'
-                AND
-            EventDate >= CURDATE()
         ORDER BY 
-            DATE(EventDate) ASC,
-            TIME(EventTime) ASC"; 
+            EventDate ASC,
+            EventTime ASC"; 
         
-$sqlDaily = "SELECT EventName, EventDesc, EventDate, EventTime 
+$sqlDaily = "SELECT *
             FROM 
                 Event 
             WHERE 
                 UserID= '" . $U_ID . "'
                     AND 
-                DATE(EventDate) = CURDATE()
+                EventDate = CURDATE()
+                    AND
+                EventTime >= CURTIME()
             ORDER BY 
-                TIME(EventTime) DESC";
+                EventTime DESC";
 
-$sqlWeekly = "SELECT EventName, EventDesc, EventDate, EventTime 
+$sqlWeekly = "SELECT *
             FROM 
                 Event 
             WHERE
@@ -39,11 +39,13 @@ $sqlWeekly = "SELECT EventName, EventDesc, EventDate, EventTime
                 YEARWEEK(EventDate) = YEARWEEK(NOW()) 
                     AND 
                 EventDate >= CURDATE()
+                    OR
+                (EventDate = CURDATE() AND EventTime >= CURTIME())
             ORDER BY 
-                DATE(EventDate) ASC,
-                TIME(EventTime) ASC";
+                EventDate ASC,
+                EventTime ASC";
             
-$sqlMonthly = "SELECT EventName, EventDesc, EventDate, EventTime 
+$sqlMonthly = "SELECT * 
             FROM 
                 Event 
             WHERE 
@@ -51,12 +53,14 @@ $sqlMonthly = "SELECT EventName, EventDesc, EventDate, EventTime
                     AND
                 YEAR(EventDate) = YEAR(NOW()) 
                     AND 
-                Month(EventDate) = Month(NOW())
+                MONTH(EventDate) = MONTH(NOW())
                     AND 
                 EventDate >= CURDATE()
+                    OR
+                (EventDate = CURDATE() AND EventTime >= CURTIME())
             ORDER BY 
-                DATE(EventDate) ASC,
-                TIME(EventTime) ASC";
+                EventDate ASC,
+                EventTime ASC";
             
     /*When a button is pressed, the $_POST['<input /> name = buttonName'] is recorded in a form. 
     When the php page is requested from the server, it will return the web page with the desired
@@ -79,8 +83,8 @@ $sqlMonthly = "SELECT EventName, EventDesc, EventDate, EventTime
          $viewTitle = "All";
     }
     else{
-        $currentSql = $sqlAll; //Load all events by default
-        $viewTitle = "All";
+        $currentSql = $sqlWeekly; //Load all events by default
+        $viewTitle = "Weekly";
     }
         
 
@@ -152,11 +156,16 @@ $title = 'My Schedule'; include("top.php");
                 if (mysqli_num_rows($resultAll) > 0) {
                     $rowAll = mysqli_fetch_assoc($resultAll);
                     while($rowAll) {
-                        $eDate = $rowAll["EventDate"];
-                        $eTime = $rowAll["EventTime"];
+                        $eDate = date("D, n/j/Y", strtotime($rowAll["EventDate"]));
+                        $eTime = date("g:i A", strtotime($rowAll["EventTime"]));
                       echo '<div class="event">
                                 <h4 class="event__point">' . $rowAll["EventName"] .  '</h4>
                                 <span class="event__duration">'. $eDate . ' ' . $eTime . '</span>
+                                <span class="event__edit">
+                                    <a href="edit_personal_event.php?id=' . $rowAll["EventID"] . '" style="text-decoration:none">
+                                        <span class="glyphicon">&#x270f;</span>
+                                    </a>
+                                </span>
                                 <p class="event__description">'. $rowAll["EventDesc"] . '</p>
                             </div>';
 

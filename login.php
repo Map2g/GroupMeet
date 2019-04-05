@@ -3,25 +3,25 @@
 //*****************************************************************************************************
 
 // include("../config.php");
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "GroupMeet";
+$servername = "localhost"; 
+$username = "root"; 
+$password = ""; 
+$dbname = "GroupMeet"; 
 
 // Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($servername, $username, $password, $dbname); 
 // Check connection
 //echo "connected";
 $message = "Connected";
-echo "<script type='text/javascript'> alert('$message'); </script>";
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+echo "<script type='text/javascript'> alert('$message'); </script>"; 
+if (!$conn) { 
+    die("Connection failed: " . mysqli_connect_error()); 
 }
 
 //*****************************************************************************************************
 
-$email = $_POST['Email'];
-$password = $_POST['Password'];
+$email = $_POST['Email']; 
+$password = $_POST['Password']; 
 
 //*****************************************************************************************************
 
@@ -34,17 +34,17 @@ $count = mysqli_num_rows($result);//counts the number of rows that match result
 
 if ($count == 1) {
     // if( isset($_POST['remember'])){
-        setcookie('Email', $email, time() + 86400);
-        session_start();
-        $_SESSION['Email'] = $email;
-        $login = $_SESSION['Email'];
-        echo $_SESSION['Email'];
-        header("location: ./index.php");
+        setcookie('Email', $email, time() + 86400); 
+        session_start(); 
+        $_SESSION['Email'] = $email; 
+        $login = $_SESSION['Email']; 
+        echo $_SESSION['Email']; 
+        header("location: ./index.php"); 
     // }
 }
-else{
-    echo "Incorrect email or password";
-}
+else{ 
+    echo "Incorrect email or password"; 
+} 
 
 ?>
 <!DOCTYPE html>

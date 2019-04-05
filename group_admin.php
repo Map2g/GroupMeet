@@ -1,6 +1,24 @@
 <?php 
 
 include("config.php");
+session_start();
+
+$sqlU  = "SELECT user_id, first_name FROM Users WHERE Users.email = '" . $_SESSION['Email'] . "'";
+$resultU = mysqli_query($conn, $sqlU); 
+$rowU = mysqli_fetch_assoc($resultU); 
+$UID = $rowU['user_id'];
+//Getting User's first name.
+
+//Create query instance to select all groups associated with an account
+$sql = "SELECT 
+            Groups.GroupName
+        FROM 
+            Users JOIN MyGuests on Users.user_id = MyGuests.GuestID
+                JOIN Groups ON MyGuests.CrowdID = Groups.GroupID
+        WHERE
+            Users.email = '" . $_SESSION['Email'] . "'
+                AND
+            Groups.UserID = '" . $UID . "'";
 
 //GroupMeet HTML template
 $title = 'Group Administration'; include("top.php");
@@ -31,99 +49,60 @@ $title = 'Group Administration'; include("top.php");
                     <a class="group-member">Mel<button class="remove-button" onclick=" modal2.style.display = 'block';"><b>- Remove Member</b></button></a>
                     <a class="group-member">Alex<button class="remove-button" onclick=" modal2.style.display = 'block';"><b>- Remove Member</b></button></a>
                 </div>
-        </div>
-        
-        <!-- The Modal Delete Group -->
-        <div id="myModal" class="modal">
-
-        <!-- Modal content -->
-        <div class="modal-content">
-            <p>Are you sure you want to delete this group?</p>
-            <div>
-            <button id="cancelBtn" class="close" onclick=" modal.style.display = 'none';" style="float: right; padding: 5px; margin: 5px;">Cancel</button>
-            <button id="yesBtn" class="close" onclick="onDelete();" style="float: right; padding: 5px; margin: 5px;">Yes</button>
             </div>
-        </div>
-
-        </div>
         
-        <!-- The Modal Remove Member -->
-        <div id="myModal2" class="modal">
-
-        <!-- Modal content -->
-        <div class="modal-content">
-            <p>Are you sure you want to remove this member?</p>
-            <div>
-            <button id="cancelBtn" class="close" onclick=" modal2.style.display = 'none';" style="float: right; padding: 5px; margin: 5px;">Cancel</button>
-            <button id="yesBtn" class="close" onclick="onDelete()" style="float: right; padding: 5px; margin: 5px;">Yes</button>
+            <!-- The Modal Delete Group -->
+            <div id="myModal" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <p>Are you sure you want to delete this group?</p>
+                    <div>
+                    <button id="cancelBtn" class="close" onclick=" modal.style.display = 'none';" style="float: right; padding: 5px; margin: 5px;">Cancel</button>
+                    <button id="yesBtn" class="close" onclick="onDelete();" style="float: right; padding: 5px; margin: 5px;">Yes</button>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        </div>
+            
+            <!-- The Modal Remove Member -->
+            <div id="myModal2" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <p>Are you sure you want to remove this member?</p>
+                    <div>
+                    <button id="cancelBtn" class="close" onclick=" modal2.style.display = 'none';" style="float: right; padding: 5px; margin: 5px;">Cancel</button>
+                    <button id="yesBtn" class="close" onclick="onDelete()" style="float: right; padding: 5px; margin: 5px;">Yes</button>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                // Get the modal
+                var modal = document.getElementById('myModal');
         
-        <script>
-        // Get the modal
-        var modal = document.getElementById('myModal');
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+                
+                // Get the modal
+                var modal2 = document.getElementById('myModal2');
         
-        // Get the modal
-        var modal2 = document.getElementById('myModal2');
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal2) {
-                modal2.style.display = "none";
-            }
-        }
-        
-        // When user presses yes button
-        function onDelete() {
-            modal.style.display="none";
-            modal2.style.display="none";
-        }
-        </script>
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target == modal2) {
+                        modal2.style.display = "none";
+                    }
+                }
+                
+                // When user presses yes button
+                function onDelete() {
+                    modal.style.display="none";
+                    modal2.style.display="none";
+                }
+            </script>
 
        </div>
-       
-       <!--======= Upcoming Events =======-->
-      
-       <section>
-             <div>
-                
-                <?php
-                
-                //$result = mysqli_query($conn, $sqlAll);
-
-                if (mysqli_num_rows($resultAll) > 0) {
-                    $row = mysqli_fetch_assoc($resultAll);
-                    while($row) {
-                        $eDate = $row["EventDate"];
-                        $eTime = $row["EventTime"];
-                      echo '<div class="event">
-                                <h4 class="event__point">' . $row["EventName"] .  '</h4>
-                                <span class="event__duration">'. $eDate . ' ' . $eTime . '</span>
-                                <p class="event__description">'. $row["EventDesc"] . '</p>
-                            </div>';
-
-                      $row = mysqli_fetch_assoc($resultAll);
-                    }
-                } else {
-                    echo "You have no events planned!";
-                    }
-    
-               mysqli_close($conn);
-               ?>
-               
-             </div>
-                
-          <!--</div>-->
-       </section>
-
 <!--Rest of html template-->
 <?php include("bottom.php");?>

@@ -9,10 +9,10 @@ $rowU = mysqli_fetch_assoc($resultU); //Fetch the query results for User and sto
 $U_ID = $rowU[user_id];
 
 //$_POST and $_GET are keywords in PHP that are used for html form tags to get and send information from the form to the database 
-$pEventName = $_POST['pEventName'];
-$pEventDate = $_POST['pEventDate'];
-$pEventTime = $_POST['pEventTime'];
-$pEventDesc = $_POST['details'];
+$pEventName = mysql_real_escape_string(htmlspecialchars($_POST['pEventName']));
+$pEventDate = date("Y-m-d", strtotime($_POST['pEventDate']));
+$pEventTime = date("H:i:s", strtotime($_POST['pEventTime']));
+$pEventDesc = mysql_real_escape_string(htmlspecialchars($_POST['details']));
 
 //Verify that the email entered is associated with a registered account
 //$sql  = "SELECT user_id FROM Users WHERE email IN ('$admin_email')"; //SQL statement to locate all records with matching values

@@ -1,5 +1,7 @@
 <?php
 
+//**************** displays groups the user is a member of ********************************************
+
 include("config.php");
 session_start();
 
@@ -12,13 +14,13 @@ $UN = $rowU[first_name];
 //Create query instance to select all groups associated with an account
 $sql = "SELECT 
             Users.email,
-            Groups.GroupName,
+            Groups.GroupName, 
             Groups.GroupID,
             Groups.GroupDesc
         FROM 
             Users JOIN MyGuests on Users.user_id = MyGuests.GuestID
                 JOIN Groups ON MyGuests.CrowdID = Groups.GroupID
-        WHERE
+        WHERE 
             Users.email IN ('" . $_SESSION['Email'] . "')";
 
 $title = 'My Schedule'; include("top.php");
@@ -50,19 +52,17 @@ $title = 'My Schedule'; include("top.php");
                 $row = mysqli_fetch_assoc($result); //Fetch the query results and store them into row format for each record found
                 
                 while($row){
-                   echo  '<a href="get_group_event.php?gid=' . $row["GroupID"] . '">';
                     echo    '<ul class="list-group"> 
                                 <li class="list-group-item">
-                                    
-                                    <h4> Group Name: ' . $row["GroupName"] . '</h4>
-                                    
-                                    
-                                    <h6>Admin: ' . $row["email"]. '</h6>
-                                    <h4> ' . $row["GroupDesc"]. '</h4>
-                                    This stuff is ugly now but i will fix it later
+                                <h4 class=""event__point">
+                                    <a href="get_group_event.php?gid=' . $row["GroupID"] . '" >
+                                        ' . $row["GroupName"] . '
+                                    </a>
+                                </h4>
+                                    <span class="event__description"> ' . $row["GroupDesc"]. '</span>
+                                    <span class="event__duration">Admin: ' . $row["email"]. '</span>
                                 </li>
-                            </ul>
-                           </a>';
+                            </ul>';
                             
                    $row = mysqli_fetch_assoc($result);
                 }
