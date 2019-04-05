@@ -42,52 +42,32 @@
           <span>Dashboard</span>
         </a>
       </li>
-      <li class="nav-item dropdown">
+      <li class="nav-item active">
+        <a class="nav-link" href="login.html">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Login</span>
+        </a>
+      </li>
+      <li class="nav-item dropdown active">
         <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>DEBUG</span>
+          <i class="fas fa-users"></i>
+          <span>Group Management</span>
         </a>
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <h6 class="dropdown-header">Login Screens:</h6>
-          <a class="dropdown-item" href="login.html">Login</a>
-          <a class="dropdown-item" href="register_user.html">Register</a>
-          <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Group Management:</h6>
           <a class="dropdown-item" href="register_group.html">Create a Group</a>
-          <a class="dropdown-item" href="view_group.php">View Group</a>
+          <a class="dropdown-item" href="group_lookup.php">My Groups</a>
+          <a class="dropdown-item" href="mess.php">Groups I Own</a>
         </div>
       </li>
-            <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Groups</span>
+      <li class="nav-item active">
+        <a class="nav-link" href="get_personal_event.php">
+          <i class="fas fa-calendar-alt"></i>
+          <span>My Schedule</span>
         </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <!--<h6 class="dropdown-header">Login Screens:</h6>-->
-          <!--<a class="dropdown-item" href="login.html">Login</a>-->
-          <!--<a class="dropdown-item" href="register_user.html">Register</a>-->
-          <!--<a class="dropdown-item" href="forgot-password.html">Forgot Password</a>-->
-          <!--<div class="dropdown-divider"></div>-->
-          <h6 class="dropdown-header">Group Management:</h6>
-          <a class="dropdown-item" href="register_group.html">Create a Group</a>
-          <a class="dropdown-item" href="group_lookup.php">View Groups</a>
-          <a class="dropdown-item" href="group_lookup_admin.php">Group Admin</a>
-        </div>
       </li>
-      <!--<li class="nav-item">-->
-      <!--  <a class="nav-link" href="register_group.html">-->
-      <!--    <i class="fas fa-fw fa-folder"></i>-->
-      <!--    <span>Create A Group</span></a>-->
-      <!--</li>-->
-      <!--<li class="nav-item">-->
-      <!--  <a class="nav-link" href="group_lookup.php">-->
-      <!--    <i class="fas fa-fw fa-folder"></i>-->
-      <!--    <span>View Your Groups</span></a>-->
-      <!--</li>-->
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="logout.php">
-          <i class="fas fa-fw fa-table"></i>
+          <i class="fas fa-sign-out-alt"></i>
           <span>Logout</span></a>
       </li>
     </ul>

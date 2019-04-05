@@ -1,3 +1,15 @@
+<?php
+
+include 'config.php';
+
+if(isset($_GET['id'])){
+  $groupID = $_GET['id'];
+} else {
+  echo "Could not get ID";
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +21,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Add a Member to a Group</title>
+  <title>Add a Member</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -24,17 +36,12 @@
     <div class="card card-register mx-auto mt-5">
       <div class="card-header">Add a Member</div>
       <div class="card-body">
-        <form action = "register_group.php" method = "post">
+        <form action = "add_member.php" method = "post">
+          
+          <input type="hidden" name="id" value=" <?php echo $groupID; ?> ">
           
           <div class="form-group">
             <div class="form-row">
-              <div class="col-md-12">
-                <div class="form-label-group">
-                  Group: <input type="text" name="gname" class="form-control" placeholder="Group Name" required="required">
-                      <!--first_name: <input type = "text" name = "fname">-->
-                      <!--<label for="firstName">First name</label>-->
-                </div>
-              </div>
               <div class="col-md-12">
                 <div class="form-label-group">
                   Member: <input type="text" name="member_email" class="form-control" placeholder="Email" required="required">
@@ -45,23 +52,14 @@
             </div>
           </div>
           
-          <!--<div class="form-group">-->
-          <!--  <div class="form-label-group">-->
-          <!--    Description: <textarea class="form-control" name="details" required="required"></textarea>-->
-              <!--<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required">-->
-              <!--<label for="inputEmail">Email address</label>-->
-          <!--  </div>-->
-          <!--</div>-->
-          
           <input type = "submit" value = "Next">
           <!--<a class="btn btn-primary btn-block" href="login.html">Register</a>-->
         </form>
+        
         <div class="text-center">
           <!--class="d-block small mt-3"-->
           <!--class="d-block small"-->
           <a href="../index.php">Home Page</a>
-          <br>
-          <!--<a href="../forgot-password.html">Forgot Password?</a>-->
         </div>
       </div>
     </div>

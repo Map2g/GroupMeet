@@ -16,9 +16,10 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 session_start();
+
 //$_POST and $_GET are keywords in PHP that are used for html form tags to get and send information from the form to the database 
-$group_name = $_POST['gname'];
-$description = $_POST['details'];
+$group_name = mysql_real_escape_string(htmlspecialchars($_POST['gname']));
+$description = mysql_real_escape_string(htmlspecialchars($_POST['details']));
 
 //Verify that the email entered is associated with a registered account
 $sql  = "SELECT user_id FROM Users WHERE Users.email = '" . $_SESSION['Email'] . "'"; //SQL statement to locate all records with matching values
@@ -28,31 +29,46 @@ $query = "INSERT INTO Groups (GroupName, GroupDesc, UserID) VALUES ('". $group_n
 
 //If a result is returned with the email that the user entered, the group will be created
 if (mysqli_num_rows($result) > 0) {
-    echo "Record located successfully";
-    echo "<br>" . "<br>";
+    // echo "Record located successfully";
+    // echo "<br>" . "<br>";
     
     //Run Insert command on the Groups table
     if (mysqli_query($conn, $query)) {
         $last_id = mysqli_insert_id($conn); //Returns the last identity value inserted into a primary key column in a table. Must be placed IMMEDIATELY after the INSERT query or $last_id will be 0
-        echo "New record created successfully . <br>";
-        echo "Group Name: " . $group_name . "<br>Description: " . $description . " " . "<br>Email " . $row["email"] . "<br>User ID: " . $row["user_id"]. "<br>";
-        echo "Group ID: " . $last_id . "<br>" . "<br>";
+        // echo "New record created successfully . <br>";
+        // echo "Group Name: " . $group_name . "<br>Description: " . $description . " " . "<br>Email " . $row["email"] . "<br>User ID: " . $row["user_id"]. "<br>";
+        // echo "Group ID: " . $last_id . "<br>" . "<br>";
         
         //If the group is successfully created, add the admin as a member of the group
         $admin = "INSERT INTO MyGuests (CrowdID, GuestID) VALUES (". $last_id .", ". $row["user_id"] .")"; //Add the admin as a member of the group
         if (mysqli_query($conn, $admin)){
-            echo "Admin added to group successfully" . "<br>";
-            header("location: ./register_group.html");
+            $message = "Group created successfully.";
+            echo '<script type="text/javascript">
+            alert("'.$message .'");
+            location="mess.php";
+            </script>';
         }else {
-        echo "Error: " . $admin . "<br>" . mysqli_error($conn);
+            $message = 'Query error: '. $admin . ' Connection error: ' . mysqli_error($conn); 
+            echo '<script type="text/javascript">
+            alert("'.$message .'");
+            location="./register_group.html";
+            </script>';
         }
         
     } else {
-        echo "Error: " . $query . "<br>" . mysqli_error($conn);
+        $message = 'Query error: '. $query . ' Connection error: ' . mysqli_error($conn); 
+        echo '<script type="text/javascript">
+        alert("'.$message .'");
+        location="./register_group.html";
+        </script>';
     }
     
 } else {
-    echo "Record not located";
+    $message = 'Record not located.'; 
+    echo '<script type="text/javascript">
+    alert("'.$message .'");
+    location="./register_group.html";
+    </script>';
 }
 
 mysqli_close($conn);

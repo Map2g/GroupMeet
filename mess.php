@@ -99,22 +99,28 @@ $title = 'Group Administration'; include("top.php");
             $group_members = mysqli_query($conn, $member_list); 
             $group_members_row = mysqli_fetch_assoc($group_members); 
      
-
+            echo '<script type="text/javascript">$(document).ready(function(){ $("#myModal").modal("show"); });</script>';
+            echo '<script type="text/javascript">$(document).ready(function(){ $("#myModal2").modal("show"); });</script>';
+            
             //Print groups respective to the admin
             while($rowGroup){
-                echo '<div class="group-box">' . $rowGroup["GroupName"] . '<button name= "deleteGroupButton" value= ' . $rowGroup["GroupID"] . ' type="submit" class="delete-group" onclick="modal.style.display = "block"">- Delete Group</button> <button class="add-button">+ Add Member</button></div>';
-                echo '</br>';
-                
-                //Print members respective to the group
-                echo '<div class="dropdown-content">';
-                while($group_members_row){
-                    echo '<a class="group-member">' . $group_members_row["first_name"] . " " . $group_members_row["last_name"] . '<button name= "deleteMemberButton" value= ' . $rowGroup["GroupID"]  . ',' . $group_members_row["user_id"] . ' type="submit" class="remove-button" onclick="modal2.style.display = "block"">
-                          <b>- Remove Member</b></button></a>';
-                    
-                    //Convert the next record in the query to a row
-                    $group_members_row = mysqli_fetch_assoc($group_members);
-                }//end inner while
+                echo '<div class="group-box">' . $rowGroup["GroupName"] . '<button name= "deleteGroupButton" value= ' . $rowGroup["GroupID"] . ' type="submit" class="delete-group" onclick="modal.style.display = "block"">- Delete Group</button> 
+                        <a href="add_member_form.php?id=' . $rowGroup["GroupID"] . '" style="text-decoration:none">
+                            <span class="class">+ Add Member</span>
+                        </a>
+                    </div>';
+
+                    //Print members respective to the group
+                    echo '<div class="dropdown-content">';
+                    while($group_members_row){
+                        echo '<a class="group-member">' . $group_members_row["first_name"] . " " . $group_members_row["last_name"] . '<button name= "deleteMemberButton" value= ' . $rowGroup["GroupID"]  . ',' . $group_members_row["user_id"] . ' type="submit" class="remove-button" onclick="modal2.style.display = "block"">
+                              <b>- Remove Member</b></button></a>';
+                        
+                        //Convert the next record in the query to a row
+                        $group_members_row = mysqli_fetch_assoc($group_members);
+                    }//end inner while
                     echo '</div>'; //div for dropdown-content
+                    
                 echo '</div>'; //div for group-box
                 
                 echo '</br>';

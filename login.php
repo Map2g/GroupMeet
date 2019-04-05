@@ -43,7 +43,11 @@ if ($count == 1) {
     // }
 }
 else{ 
-    echo "Incorrect email or password"; 
+    $message = "Incorrect email or password"; 
+    echo '<script type="text/javascript">
+    alert($message);
+    location="login.php";
+    </script>';
 } 
 
 ?>
