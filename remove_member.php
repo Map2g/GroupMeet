@@ -5,6 +5,7 @@ include("config.php");
 $member = $_POST['member_email'];
 // $admin = $_POST['admin_email'];
 $group = $_POST['gname']; 
+
 $result = NULL;
 $row = NULL;
 $respective_groups_results = NULL;

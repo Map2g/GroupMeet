@@ -57,16 +57,22 @@ $title = 'Group Administration'; include("top.php");
       <li class="breadcrumb-item">
         <a href="index.php">Dashboard</a>
       </li>
-      <li class="breadcrumb-item active">Groups</li>
+      <li class="breadcrumb-item active">Groups I Own</li>
     </ol>
 
     <!-- Page Content -->
-    <h1>Groups<button class="add-button">+ Add Group</button></h1>
+    <h1>Groups<button class="add-button" id="addGroup">+ Add Group</button></h1>
     <hr>
+    
+    <script type="text/javascript">
+          document.getElementById("addGroup").onclick = function () {
+          window.location.href = "register_group.html";
+          };
+    </script>
     
      <!--======= Group =======-->
     
-    <div class="dropdown">
+    <ul class="list-group">
         <form action="mess.php" method="post">
         <?php
             //Query all groups the admin owns
@@ -82,48 +88,54 @@ $title = 'Group Administration'; include("top.php");
                             
             $groupProperty = mysqli_query($conn, $sql); 
             $rowGroup = mysqli_fetch_assoc($groupProperty);
-            
-            //Query all members of the group. Do not list admin to prevent accidental deletion of themselves
-            $member_list = 
-            "SELECT 
-                user_id,
-                first_name, 
-                last_name
-            FROM 
-                Users INNER JOIN MyGuests ON Users.user_id = MyGuests.GuestID
-            WHERE 
-                MyGuests.CrowdID = '" . $rowGroup["GroupID"] . "' 
-                    AND
-                MyGuests.GuestID != '" . $UID . "' ";
-                
-            $group_members = mysqli_query($conn, $member_list); 
-            $group_members_row = mysqli_fetch_assoc($group_members); 
      
             echo '<script type="text/javascript">$(document).ready(function(){ $("#myModal").modal("show"); });</script>';
             echo '<script type="text/javascript">$(document).ready(function(){ $("#myModal2").modal("show"); });</script>';
             
             //Print groups respective to the admin
             while($rowGroup){
-                echo '<div class="group-box">' . $rowGroup["GroupName"] . '<button name= "deleteGroupButton" value= ' . $rowGroup["GroupID"] . ' type="submit" class="delete-group" onclick="modal.style.display = "block"">- Delete Group</button> 
-                        <a href="add_member_form.php?id=' . $rowGroup["GroupID"] . '" style="text-decoration:none">
-                            <span class="class">+ Add Member</span>
-                        </a>
-                    </div>';
-
-                    //Print members respective to the group
+                
+                echo '<div class="dropdown">
+                        <div class="group-box">' . $rowGroup["GroupName"] . '
+                            <button name= "deleteGroupButton" value= ' . $rowGroup["GroupID"] . ' type="submit" class="delete-group" onclick="modal.style.display = "block"">
+                                - Delete Group
+                            </button> 
+                            <a href="add_member_form.php?id=' . $rowGroup["GroupID"] . '" style="text-decoration:none">
+                                <span class="add-button">+ Add Member</span>
+                            </a>
+                        </div>'; //for group box
+                    
+                        //Query all members of the group. Do not list admin to prevent accidental deletion of themselves
+                        $member_list = 
+                        "SELECT 
+                            user_id,
+                            first_name, 
+                            last_name
+                        FROM 
+                            Users INNER JOIN MyGuests ON Users.user_id = MyGuests.GuestID
+                        WHERE 
+                            MyGuests.CrowdID = '" . $rowGroup["GroupID"] . "' 
+                                AND
+                            MyGuests.GuestID != '" . $UID . "' ";
+                            
+                        $group_members = mysqli_query($conn, $member_list); 
+                        $group_members_row = mysqli_fetch_assoc($group_members); 
+                    
                     echo '<div class="dropdown-content">';
                     while($group_members_row){
-                        echo '<a class="group-member">' . $group_members_row["first_name"] . " " . $group_members_row["last_name"] . '<button name= "deleteMemberButton" value= ' . $rowGroup["GroupID"]  . ',' . $group_members_row["user_id"] . ' type="submit" class="remove-button" onclick="modal2.style.display = "block"">
-                              <b>- Remove Member</b></button></a>';
+                        echo '<a class="dropdown-item">' . $group_members_row["first_name"] . " " . $group_members_row["last_name"] . '
+                                <button name= "deleteMemberButton" value= ' . $rowGroup["GroupID"]  . ',' . $group_members_row["user_id"] . ' type="submit" class="remove-button" onclick="modal2.style.display = "block"">
+                                    <b>- Remove Member</b>
+                                </button>
+                              </a>';
                         
                         //Convert the next record in the query to a row
                         $group_members_row = mysqli_fetch_assoc($group_members);
                     }//end inner while
                     echo '</div>'; //div for dropdown-content
-                    
-                echo '</div>'; //div for group-box
+                echo '</div>'; //div for dropdown
                 
-                echo '</br>';
+                echo '<br>';
               
                //Convert the next record in the query to a row
                $rowGroup = mysqli_fetch_assoc($groupProperty); 
@@ -131,6 +143,7 @@ $title = 'Group Administration'; include("top.php");
                 
         ?>
         </form>
+    </ul>
 
 
         <!-- The Modal Delete Group -->

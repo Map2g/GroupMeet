@@ -38,9 +38,9 @@ $sqlWeekly = "SELECT *
                     AND
                 YEARWEEK(EventDate) = YEARWEEK(NOW()) 
                     AND 
-                EventDate >= CURDATE()
+                (EventDate >= CURDATE()
                     OR
-                (EventDate = CURDATE() AND EventTime >= CURTIME())
+                (EventDate = CURDATE() AND EventTime >= CURTIME()))
             ORDER BY 
                 EventDate ASC,
                 EventTime ASC";
@@ -55,9 +55,9 @@ $sqlMonthly = "SELECT *
                     AND 
                 MONTH(EventDate) = MONTH(NOW())
                     AND 
-                EventDate >= CURDATE()
+                (EventDate >= CURDATE()
                     OR
-                (EventDate = CURDATE() AND EventTime >= CURTIME())
+                (EventDate = CURDATE() AND EventTime >= CURTIME()))
             ORDER BY 
                 EventDate ASC,
                 EventTime ASC";
@@ -83,8 +83,8 @@ $sqlMonthly = "SELECT *
          $viewTitle = "All";
     }
     else{
-        $currentSql = $sqlWeekly; //Load all events by default
-        $viewTitle = "Weekly";
+        $currentSql = $sqlAll; //Load all events by default
+        $viewTitle = "All";
     }
         
 

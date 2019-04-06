@@ -24,7 +24,16 @@
 }
 
 .plus-icon2 {
-   position: relative;
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   right: 40px;
+   cursor: pointer;
+   transition: all 350ms ease;
+}
+
+.plus-icon3 {
+   position: absolute;
    top: 50%;
    transform: translateY(-50%);
    right: 40px;
@@ -58,6 +67,7 @@ position: relative;
 .events-wrapper {
 margin-bottom: 30px;
 }
+
 .event {
 position: relative;
 margin-bottom: 25px;
@@ -100,8 +110,17 @@ font-size: 15px;
 font-weight: 800;
 }
 
+.event__vote {
+position: absolute;
+top: 38px;
+right: 39px;
+color: #e0041e;
+font-size: 15px;
+font-weight: 450;
+}
+
 .event__description {
-margin-top: 10px;
+margin-top: 20px;
 color: #282b30;      /*Pick darker color later*/
 font-size: 15px;
 font-weight: 500;
@@ -112,11 +131,6 @@ position: absolute;
 left: 25px;
 top: 17px;
 }  
-
-/*.sneaky_a {*/
-   
-/*}*/
-
 
 /* Voting buttons are radio for now but if voting is actually going to matter they
    will have to be buttons that do something like update a vote quantity in the dB

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+  
 <?php
 
 include 'config.php';
@@ -9,9 +12,6 @@ if(isset($_GET['id'])){
 }
 
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
 
 <head>
 
@@ -44,7 +44,7 @@ if(isset($_GET['id'])){
             <div class="form-row">
               <div class="col-md-12">
                 <div class="form-label-group">
-                  Member: <input type="text" name="member_email" class="form-control" placeholder="Email" required="required">
+                  Member Email: <input type="text" name="member_email" class="form-control" placeholder="Email" required="required">
                   <!--<input type="text" id="lastName" class="form-control" placeholder="Last name" required="required">-->
                   <!--<label for="lastName">Last name</label>-->
                 </div>

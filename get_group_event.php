@@ -84,9 +84,9 @@ $sqlWeekly = "SELECT *
                     AND
                 YEARWEEK(GrpEventDate) = YEARWEEK(NOW()) 
                     AND 
-                GrpEventDate >= CURDATE()
+                (GrpEventDate >= CURDATE()
                     OR
-                (GrpEventDate = CURDATE() AND GrpEventTime >= CURTIME())
+                (GrpEventDate = CURDATE() AND GrpEventTime >= CURTIME()))
             ORDER BY 
                 GrpEventDate ASC,
                 GrpEventTime ASC";
@@ -105,9 +105,9 @@ $sqlMonthly = "SELECT *
                     AND 
                 MONTH(GrpEventDate) = Month(NOW())
                     AND 
-                GrpEventDate >= CURDATE()
+                (GrpEventDate >= CURDATE()
                     OR
-                (GrpEventDate = CURDATE() AND GrpEventTime >= CURTIME())
+                (GrpEventDate = CURDATE() AND GrpEventTime >= CURTIME()))
             ORDER BY 
                 GrpEventDate ASC,
                 GrpEventTime ASC";
@@ -134,8 +134,8 @@ $sqlMonthly = "SELECT *
          $viewTitle = "All";
     }
     else {
-        $currentSql = $sqlWeekly; //Default view is weekly.
-        $viewTitle = "Weekly";
+        $currentSql = $sqlAll; //Default view is weekly.
+        $viewTitle = "All";
     }
     
     
@@ -163,18 +163,17 @@ $title = 'Group Schedule'; include("top.php");
        <section class="today-box" id="today-box">
           <span class="breadcrumb2">Today</span>
           <h3 class="date-title"><script>document.write(new Date().toDateString());</script></h3>
-              
-            <div class="plus-icon2">
             
+            <div class="plus-icon2">
                  <button id="addEvent" class="stylishButton">
                     <i class="fa fa-plus"></i>
                     Add Event
                  </button>
-                
-                <br><br>
+                 
+                 <br><br>
                 
                 <div class="dropdown">
-                 <button class="btn btn-secondary dropdown-toggle" type="button" id="viewMembers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 <button class="btn stylishButton dropdown-toggle" type="button" id="viewMembers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Member List
                  </button>
                     <div class="dropdown-menu" aria-labelledby="viewMembers">
@@ -188,16 +187,15 @@ $title = 'Group Schedule'; include("top.php");
                      
                     </div>
                 </div>
-            
             </div>
-            
-                <script type="text/javascript">
-                  document.getElementById("addEvent").onclick = function () {
-                  window.location.href = "register_group_event.html";
-                  };
-                </script>
              
-       </section>
+           </section>
+       
+        <script type="text/javascript">
+          document.getElementById("addEvent").onclick = function () {
+          window.location.href = "register_group_event.html";
+          };
+        </script>
         
         
        <!--======== View Option Buttons =======-->
@@ -235,25 +233,37 @@ $title = 'Group Schedule'; include("top.php");
                   while($row) {
                         $eDate = date("D, n/j/Y", strtotime($row["GrpEventDate"]));
                         $eTime = date("g:i A", strtotime($row["GrpEventTime"]));
-                      echo '<div class="event">
+                echo '<div class="event">
+                        
+                        <form action="vote.php" method="post">
+                        <input type="hidden" name="eventid" value="'.$row["GrpEventID"].'">
+                        
                         <div class="i3">
                           <div class="hiddenradio">
                             <label>
-                              <input type="radio" name="' . $radioIdent . '" value="up">
+                              <input type="radio" name="' . $row["GrpEventID"] . '" value="up">
                               <i class="far fa-thumbs-up"></i>
                             </label>
                             <label>
-                              <input type="radio" name="' . $radioIdent . '" value="down">
+                              <input type="radio" name="' . $row["GrpEventID"] . '" value="down">
                               <i class="far fa-thumbs-down"></i>
                             </label>
                           </div>
-                         </div>
+                          <small><input type = "submit" value = "Vote"></small>
+                        </div>
+                        
+                        
+                        </form>
+                        
                           <h4 class="event__point">' . $row["GrpEventName"] .  '</h4>
                           <span class="event__duration">'. $eDate . ' ' . $eTime . '</span>
                           <span class="event__edit">
                                     <a href="edit_group_event.php?id=' . $row["GrpEventID"] . '" style="text-decoration:none">
                                         <span class="glyphicon">&#x270f;</span>
                                     </a>
+                          </span>
+                          <span class="event__vote">
+                                Yes: '. $row["YesVote"] .' No: '. $row["NoVote"] .'
                           </span>
                           <p class="event__description">'. $row["GrpEventDescription"] . '</p>
                       </div>';

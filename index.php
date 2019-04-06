@@ -26,7 +26,7 @@ $title = 'Dashboard'; require ("top.php"); session_start() ;
             <div class="card text-white bg-primary o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon">
-                  <i class="fas fa-fw fa-comments"></i>
+                  <i class="fas fa-users"></i>
                 </div>
                 <div class="mr-5">Create A Group</div>
               </div>
@@ -58,7 +58,7 @@ $title = 'Dashboard'; require ("top.php"); session_start() ;
             <div class="card text-white bg-success o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon">
-                  <i class="fas fa-fw fa-shopping-cart"></i>
+                  <i class="fas fa-calendar-alt"></i>
                 </div>
                 <div class="mr-5">View Your Calendar</div>
               </div>
@@ -74,7 +74,7 @@ $title = 'Dashboard'; require ("top.php"); session_start() ;
             <div class="card text-white bg-danger o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon">
-                  <i class="fas fa-fw fa-life-ring"></i>
+                  <i class="fas fa-bell"></i>
                 </div>
                 <div class="mr-5">13 New Notifications!</div>
               </div>
