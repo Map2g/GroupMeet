@@ -16,7 +16,8 @@ $sql = "SELECT
             Users.email,
             Groups.GroupName, 
             Groups.GroupID,
-            Groups.GroupDesc
+            Groups.GroupDesc,
+            Groups.UserID
         FROM 
             Users JOIN MyGuests on Users.user_id = MyGuests.GuestID
                 JOIN Groups ON MyGuests.CrowdID = Groups.GroupID
@@ -60,7 +61,7 @@ $title = 'My Schedule'; include("top.php");
                                     </a>
                                 </h4>
                                     <span class="event__description"> ' . $row["GroupDesc"]. '</span>
-                                    <span class="event__duration">Admin: ' . $row["email"]. '</span>
+                                    <span class="event__duration">Admin: ' . mysqli_fetch_assoc(mysqli_query($conn, "SELECT email FROM Users WHERE user_id = '" . $row["UserID"] . "'"))["email"]. '</span>
                                 </li>
                             </ul>';
                             
