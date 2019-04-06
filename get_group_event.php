@@ -134,7 +134,7 @@ $sqlMonthly = "SELECT *
          $viewTitle = "All";
     }
     else {
-        $currentSql = $sqlAll; //Default view is weekly.
+        $currentSql = $sqlAll; //Default view is All.
         $viewTitle = "All";
     }
     
@@ -233,6 +233,13 @@ $title = 'Group Schedule'; include("top.php");
                   while($row) {
                         $eDate = date("D, n/j/Y", strtotime($row["GrpEventDate"]));
                         $eTime = date("g:i A", strtotime($row["GrpEventTime"]));
+                        
+                        
+                $canVote = true;
+                
+                //sotre the results of query in canvote, if one record, true, else false
+                //group by query to tally yes and not votes
+                
                 echo '<div class="event">
                         
                         <form action="vote.php" method="post">
@@ -249,7 +256,13 @@ $title = 'Group Schedule'; include("top.php");
                               <i class="far fa-thumbs-down"></i>
                             </label>
                           </div>
-                          <small><input type = "submit" value = "Vote"></small>
+                          <small><input type = "submit" value = "Vote" '
+                          
+                          .
+                          ($canVote==true?"":"disabled")
+                          .
+                          
+                          '></small>
                         </div>
                         
                         
