@@ -134,7 +134,7 @@ $sqlMonthly = "SELECT *
          $viewTitle = "All";
     }
     else {
-        $currentSql = $sqlAll; //Default view is All.
+        $currentSql = $sqlAll; //Default view is weekly.
         $viewTitle = "All";
     }
     
@@ -213,6 +213,7 @@ $title = 'Group Schedule'; include("top.php");
        
         
        <!--======= Events Container =======-->
+       
     
        <section class="upcoming-events">
           <div class="upcoming-events-head">
@@ -225,21 +226,78 @@ $title = 'Group Schedule'; include("top.php");
              <div class="events-wrapper">
                
                <?php
-               $radioIdent = 1;
+               //retrieve list of events for the group and store them in $result
                $result = mysqli_query($conn, $currentSql);
                
                if (mysqli_num_rows($result) > 0) {
+                  //Convert the qeury results from $result to rows to echo them
                   $row = mysqli_fetch_assoc($result);
+                  
+                  //echo all groups and their information
                   while($row) {
-                        $eDate = date("D, n/j/Y", strtotime($row["GrpEventDate"]));
-                        $eTime = date("g:i A", strtotime($row["GrpEventTime"]));
+                    $eDate = date("D, n/j/Y", strtotime($row["GrpEventDate"]));
+                    $eTime = date("g:i A", strtotime($row["GrpEventTime"]));
                         
+                    //Determine if a user already voted
+                    $vote = "SELECT * FROM GroupEvent_User_Vote WHERE (User_ID = '" . $U_ID . "') AND (GroupEventID = '" . $row["GrpEventID"] . "')";
+                    $result2 = mysqli_query($conn, $vote);
+                    if((mysqli_num_rows($result2) > 0)){
+                        //Store the results of query in canVote, if one record, true, else false
+                        $canVote = false;
+                    }
+                    else{
+                      $canVote = true;
+                    }
+                    
+                   // $canVote = true;
+                    
+                    //Tally number of 'Y' votes
+                    $up_vote = 
+                        "SELECT 
+                            COUNT(Decision),
+                            GroupEventID 
+                        FROM 
+                            GroupEvent_User_Vote
+                        WHERE 
+                            (Decision = 'Y')
+                                AND 
+                            (GroupEventID = '" . $row["GrpEventID"] . "') 
+                        GROUP BY (GroupEventID)";
+                    
+                    //Tally number of 'Y' votes
+                    $down_vote = 
+                        "SELECT 
+                            COUNT(Decision),
+                            GroupEventID 
+                        FROM 
+                            GroupEvent_User_Vote
+                        WHERE 
+                            (Decision = 'N')
+                                AND 
+                            (GroupEventID = '" . $row["GrpEventID"] . "') 
+                        GROUP BY (GroupEventID)";
+
+                  //Convert the query results for $up_vote and $down_vote to rows
+                  $up_vote_results = mysqli_query($conn, $up_vote);
+                  $row_up_vote = mysqli_fetch_assoc($up_vote_results);
+                  $up_vote_tally = NULL;
+                  if($row_up_vote > 0){
+                      $up_vote_tally = $row_up_vote["COUNT(Decision)"];
+                  }
+                  else{
+                      $up_vote_tally = 0;
+                  }
+                  
+                  $down_vote_results = mysqli_query($conn, $down_vote);
+                  $row_down_vote = mysqli_fetch_assoc($down_vote_results);
+                  $down_vote_tally = NULL;
+                  if($row_down_vote > 0){
+                      $down_vote_tally = $row_down_vote["COUNT(Decision)"];
+                  }
+                  else{
+                      $down_vote_tally = 0;
+                  }
                         
-                $canVote = true;
-                
-                //sotre the results of query in canvote, if one record, true, else false
-                //group by query to tally yes and not votes
-                
                 echo '<div class="event">
                         
                         <form action="vote.php" method="post">
@@ -256,13 +314,7 @@ $title = 'Group Schedule'; include("top.php");
                               <i class="far fa-thumbs-down"></i>
                             </label>
                           </div>
-                          <small><input type = "submit" value = "Vote" '
-                          
-                          .
-                          ($canVote==true?"":"disabled")
-                          .
-                          
-                          '></small>
+                          <small><input type = "submit" value = "Vote " ' . ($canVote==true?"enabled":"disabled") . '></small>
                         </div>
                         
                         
@@ -276,13 +328,12 @@ $title = 'Group Schedule'; include("top.php");
                                     </a>
                           </span>
                           <span class="event__vote">
-                                Yes: '. $row["YesVote"] .' No: '. $row["NoVote"] .'
+                                Yes: '. $up_vote_tally .' No: '. $down_vote_tally .'
                           </span>
                           <p class="event__description">'. $row["GrpEventDescription"] . '</p>
                       </div>';
                       
                       $row = mysqli_fetch_assoc($result);
-                      $radioIdent = $radioIdent + 1;
                     }
                 } else {
                     echo "This group has no events planned!";

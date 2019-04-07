@@ -56,7 +56,7 @@
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <a class="dropdown-item" href="register_group.html">Create a Group</a>
           <a class="dropdown-item" href="group_lookup.php">My Groups</a>
-          <a class="dropdown-item" href="mess.php">Groups I Own</a>
+          <a class="dropdown-item" href="group_admin_page.php">Groups I Own</a>
         </div>
       </li>
       <li class="nav-item active">

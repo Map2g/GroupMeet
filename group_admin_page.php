@@ -73,7 +73,7 @@ $title = 'Group Administration'; include("top.php");
      <!--======= Group =======-->
     
     <ul class="list-group">
-        <form action="mess.php" method="post">
+        <form action="group_admin_page.php" method="post">
         <?php
             //Query all groups the admin owns
             $sql = 

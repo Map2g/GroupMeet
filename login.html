@@ -34,8 +34,21 @@
           </div>
           <div class="form-group">
             <div class="form-label-group">
-             Password : <input type="text" name="Password" class="form-control" placeholder="Password" required="required">
+             Password : <input type="password" name="Password" class="form-control" placeholder="Password" required="required">
               <!--<label for="inputPassword">Password</label>-->
+                  
+                    <script> 
+                    // Change the type of input to password or text 
+                        function Toggle() { 
+                            var temp = document.getElementById("typepass"); 
+                            if (temp.type === "password") { 
+                                temp.type = "text"; 
+                            } 
+                            else { 
+                                temp.type = "password"; 
+                            } 
+                        } 
+                </script> 
             </div>
           </div>
           <!--<div class="form-group">-->

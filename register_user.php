@@ -14,10 +14,11 @@ $password = mysql_real_escape_string(htmlspecialchars($_POST['Password']));
 
 //*****************************************************************************************************
 
-$hashed = hash('sha512', $password);
+// $hashed = password_hash('sha512', $password);
+$hashed = password_hash($password, PASSWORD_DEFAULT);
 
 //Upload the input fields from the form into the Users database
-$sql = "INSERT INTO Users (first_name, last_name, email, password) VALUES ('$first_name', '$last_name', '$email', '$hashed')";
+$sql = "INSERT INTO Users (first_name, last_name, email, password) VALUES ('$first_name', '$last_name', '$email', '$password')";
 
 //*****************************************************************************************************
 

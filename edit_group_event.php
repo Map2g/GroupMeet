@@ -1,6 +1,7 @@
 <?php
 
 include 'config.php';
+session_start();
 
 if(isset($_GET['id'])){
   $GeventID = $_GET['id'];
@@ -21,6 +22,41 @@ $geName = $row["GrpEventName"];
 $geDesc = $row["GrpEventDescription"];
 $geDate = $row["GrpEventDate"];
 $geTime = $row["GrpEventTime"];
+
+
+$sqlT = "SELECT Users.email 
+          FROM Users INNER JOIN Groups ON Users.user_id = Groups.UserID 
+                      INNER JOIN GroupEvent ON Groups.GroupID = GroupEvent.GroupID 
+        WHERE GroupEvent.GrpEventID = '". $GeventID ."'";
+$resultT = mysqli_query($conn, $sqlT);
+
+// if ($resultT == false){
+//     $message = "Query error: ".  mysqli_error($conn) . " " . $sqlT;
+//     echo '<script type="text/javascript">
+//     alert("'.$message.'");
+//     location="get_group_event.php";
+//     </script>';
+// } else{
+//   $rowT = mysqli_fetch_assoc($resultT);
+//   $message = $rowT["email"];
+//     echo '<script type="text/javascript">
+//     alert("'.$message.'");
+//     location="get_group_event.php";
+//     </script>';
+// }
+
+  $rowT = mysqli_fetch_assoc($resultT);
+  $eventOwner = $rowT["email"];
+
+if ($_SESSION['Email'] != $eventOwner){
+    $message = "Only " . $eventOwner. " can edit this event."; 
+    //$message = "owner: " . $eventOwner . "session: " . $_SESSION['Email'];
+    echo '<script type="text/javascript">
+    alert("'.$message.'");
+    location="get_group_event.php";
+    </script>';
+}
+
 
 ?>
 

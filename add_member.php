@@ -20,7 +20,7 @@ if ($count == 1) {
         $message = "Member successfully added.";
         echo '<script type="text/javascript">
         alert("'. $message. '");
-        location="mess.php";
+        location="group_admin_page.php";
         </script>';
     } else {
         $message = "Error" . $addMem . "<br>" . mysqli_error($conn);

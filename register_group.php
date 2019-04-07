@@ -40,12 +40,12 @@ if (mysqli_num_rows($result) > 0) {
         // echo "Group ID: " . $last_id . "<br>" . "<br>";
         
         //If the group is successfully created, add the admin as a member of the group
-        $admin = "INSERT INTO MyGuests (CrowdID, GuestID) VALUES (". $last_id .", ". $row["user_id"] .")"; //Add the admin as a member of the group
+        $admin = "INSERT INTO MyGuests (CrowdID, GuestID) VALUES ('". $last_id ."', '". $row["user_id"] ."')"; //Add the admin as a member of the group
         if (mysqli_query($conn, $admin)){
             $message = "Group created successfully.";
             echo '<script type="text/javascript">
             alert("'.$message .'");
-            location="mess.php";
+            location="group_admin_page.php";
             </script>';
         }else {
             $message = 'Query error: '. $admin . ' Connection error: ' . mysqli_error($conn); 
